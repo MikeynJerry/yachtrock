@@ -1,0 +1,248 @@
+[
+    {
+        "id": 0,
+        "name": "OCEAN ROAMER",
+        "attribute1": "guitar",
+        "attribute2": "lyrics",
+        "attribute3": "beat"
+    },
+    {
+        "id": 1,
+        "name": "AND THE WORLD FLOATS ON",
+        "attribute1": "anthem",
+        "attribute2": "guitar",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 2,
+        "name": "WASHED AWAY",
+        "attribute1": "saxophone",
+        "attribute2": "guitar",
+        "attribute3": "beat"
+    },
+    {
+        "id": 3,
+        "name": "SHAPES OF SOLITUDE",
+        "attribute1": "duet",
+        "attribute2": "refrain",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 4,
+        "name": "GRAPES (THE SANGRIA SONG)",
+        "attribute1": "duet",
+        "attribute2": "saxophone",
+        "attribute3": "refrain"
+    },
+    {
+        "id": 5,
+        "name": "BORN TO DRIFT",
+        "attribute1": "saxophone",
+        "attribute2": "guitar",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 6,
+        "name": "WIND IN MY SAILS",
+        "attribute1": "saxophone",
+        "attribute2": "refrain",
+        "attribute3": "lyrics"
+    },
+    
+    {
+        "id": 7,
+        "name": "MOONLIGHT, MIST, AND MEMORIES",
+        "attribute1": "duet",
+        "attribute2": "saxophone",
+        "attribute3": "guitar"
+    },
+    {
+        "id": 8,
+        "name": "A PALM TREE OF MY OWN",
+        "attribute1": "duet",
+        "attribute2": "refrain",
+        "attribute3": "guitar"
+    },
+    {
+        "id": 9,
+        "name": "WALKING IN THE SUNLIGHT",
+        "attribute1": "duet",
+        "attribute2": "saxophone",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 10,
+        "name": "MARIAH (SONG FOR MY BOAT)",
+        "attribute1": "duet",
+        "attribute2": "lyrics",
+        "attribute3": "beat"
+    },
+    {
+        "id": 11,
+        "name": "DAYS GONE BY",
+        "attribute1": "saxophone",
+        "attribute2": "anthem",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 12,
+        "name": "YOUR EYES ON MY TIDE (LET'S GET LOW)",
+        "attribute1": "duet",
+        "attribute2": "lyrics",
+        "attribute3": "guitar"
+    },
+    {
+        "id": 13,
+        "name": "MARINA HIGHWAY",
+        "attribute1": "duet",
+        "attribute2": "saxophone",
+        "attribute3": "beat"
+    },
+    {
+        "id": 14,
+        "name": "LISTEN TO THE BREEZE",
+        "attribute1": "saxophone",
+        "attribute2": "refrain",
+        "attribute3": "anthem"
+    },
+    {
+        "id": 15,
+        "name": "SANBOX SERENADE",
+        "attribute1": "duet",
+        "attribute2": "anthem",
+        "attribute3": "beat"
+    },
+    {
+        "id": 16,
+        "name": "MY LOVE HAS SET SAIL",
+        "attribute1": "duet",
+        "attribute2": "guitar",
+        "attribute3": "beat"
+    },
+    {
+        "id": 17,
+        "name": "MY KINDA MAI TAI",
+        "attribute1": "saxophone",
+        "attribute2": "lyrics",
+        "attribute3": "beat"
+    },
+    {
+        "id": 18,
+        "name": "CHAIN OF MEMORIES",
+        "attribute1": "duet",
+        "attribute2": "anthem",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 19,
+        "name": "LOVIN' SUMMER",
+        "attribute1": "duet",
+        "attribute2": "refrain",
+        "attribute3": "anthem"
+    },
+    {
+        "id": 20,
+        "name": "CLEAR SKIES AHEAD",
+        "attribute1": "duet",
+        "attribute2": "saxophone",
+        "attribute3": "anthem"
+    },
+    {
+        "id": 21,
+        "name": "SALT IN THE AIR, LOVE ON THE BREEZE",
+        "attribute1": "duet",
+        "attribute2": "guitar",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 22,
+        "name": "BOARDWALK EYES",
+        "attribute1": "duet",
+        "attribute2": "refrain",
+        "attribute3": "beat"
+    },
+    {
+        "id": 23,
+        "name": "LADY BY THE SHORE",
+        "attribute1": "saxophone",
+        "attribute2": "anthem",
+        "attribute3": "guitar"
+    },
+    {
+        "id": 24,
+        "name": "SHE LEFT ME FOR HIS SAILBOAT",
+        "attribute1": "refrain",
+        "attribute2": "guitar",
+        "attribute3": "beat"
+    },
+    {
+        "id": 25,
+        "name": "SONG FOR A SEAGULL",
+        "attribute1": "lyrics",
+        "attribute2": "anthem",
+        "attribute3": "beat"
+    },
+    {
+        "id": 26,
+        "name": "SHADOWS OF A SEASHELL",
+        "attribute1": "saxophone",
+        "attribute2": "anthem",
+        "attribute3": "beat"
+    },
+    {
+        "id": 27,
+        "name": "SUMMER SOMETHING",
+        "attribute1": "saxophone",
+        "attribute2": "refrain",
+        "attribute3": "guitar"
+    },
+    {
+        "id": 28,
+        "name": "MOONLIT MARGARITA",
+        "attribute1": "refrain",
+        "attribute2": "anthem",
+        "attribute3": "beat"
+    },
+    {
+        "id": 29,
+        "name": "HEAVEN IN AN OCEAN BREEZE",
+        "attribute1": "refrain",
+        "attribute2": "lyrics",
+        "attribute3": "beat"
+    },
+    {
+        "id": 30,
+        "name": "KISS IN THE MIST",
+        "attribute1": "refrain",
+        "attribute2": "guitar",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 31,
+        "name": "GIVE ME PARADISE",
+        "attribute1": "anthem",
+        "attribute2": "guitar",
+        "attribute3": "beat"
+    },
+    {
+        "id": 32,
+        "name": "RIPPLE IN A GLASS",
+        "attribute1": "saxophone",
+        "attribute2": "refrain",
+        "attribute3": "beat"
+    },
+    {
+        "id": 33,
+        "name": "FIND THE SHORTCUT HOME",
+        "attribute1": "refrain",
+        "attribute2": "anthem",
+        "attribute3": "lyrics"
+    },
+    {
+        "id": 34,
+        "name": "MIMOSA DREAMS",
+        "attribute1": "refrain",
+        "attribute2": "anthem",
+        "attribute3": "guitar"
+    }
+]
