@@ -47,22 +47,14 @@ CREATE TABLE IF NOT EXISTS `single_cards` (
     PRIMARY KEY (`card_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 AUTO_INCREMENT = 1;
 -- Soirée cards table (party cards)
-CREATE TABLE IF NOT EXISTS `soiree_cards` (
+CREATE TABLE IF NOT EXISTS `soiree_deck` (
     `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `card_type` varchar(16) NOT NULL,
+    -- 'soiree'
+    `card_type_arg` int(11) NOT NULL,
     `card_location` varchar(16) NOT NULL,
     -- 'deck', 'board1', 'board2'
     `card_location_arg` int(11) NOT NULL,
-    -- board position
-    `party_name` varchar(64) NOT NULL,
-    `color_bonus` varchar(16) NOT NULL,
-    -- color that gets bonus
-    `record_bonus` int(11) NOT NULL DEFAULT 0,
-    -- bonus for single tokens
-    `in_vogue_bonus` varchar(32) NOT NULL,
-    -- 'hat', 'sunglasses', 'shoes', 'multicolor'
-    `color_bonus_points` int(11) NOT NULL DEFAULT 1,
-    `record_bonus_points` int(11) NOT NULL DEFAULT 1,
-    `in_vogue_bonus_points` int(11) NOT NULL DEFAULT 4,
     PRIMARY KEY (`card_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 AUTO_INCREMENT = 1;
 -- Player outfits table (what clothing each player is wearing)

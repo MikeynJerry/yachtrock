@@ -1,0 +1,76 @@
+{
+  "stats": [
+    {
+      "id": "style_cards_played",
+      "name": "Style cards played",
+      "type": "int",
+      "category": "table"
+    },
+    {
+      "id": "singles_recorded",
+      "name": "Singles recorded",
+      "type": "int",
+      "category": "table"
+    },
+    {
+      "id": "parties_attended",
+      "name": "Parties attended",
+      "type": "int",
+      "category": "table"
+    },
+    {
+      "id": "style_cards_collected",
+      "name": "Style cards collected",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "clothing_cards_sold",
+      "name": "Clothing cards sold",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "musical_cards_used",
+      "name": "Musical style cards used",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "singles_recorded_solo",
+      "name": "Singles recorded solo",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "singles_recorded_collaboration",
+      "name": "Singles recorded in collaboration",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "single_tokens_earned",
+      "name": "Single tokens earned",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "party_bonus_points",
+      "name": "Party bonus points earned",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "gold_cards_collected",
+      "name": "Gold clothing cards collected",
+      "type": "int",
+      "category": "player"
+    },
+    {
+      "id": "outfits_completed",
+      "name": "Complete outfits worn",
+      "type": "int",
+      "category": "player"
+    }
+  ]
+}

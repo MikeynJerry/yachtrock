@@ -1,0 +1,165 @@
+[
+    {
+      "party_name": "Malibu Boat Christening",
+      "color": "teal",
+      "record": 1,
+      "in_vogue": "hat",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Beverly Hills Pool Party",
+      "color": "coral",
+      "record": 1,
+      "in_vogue": "sunglasses",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Palm Springs House Party",
+      "color": "lavender",
+      "record": 1,
+      "in_vogue": "shoes",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Los Angeles Music Awards",
+      "color": "gold",
+      "record": 2,
+      "in_vogue": "multicolor",
+      "color_points": 2,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Venice Beach Bonfire",
+      "color": "teal",
+      "record": 1,
+      "in_vogue": "shoes",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Hollywood Hills Sunset",
+      "color": "coral",
+      "record": 2,
+      "in_vogue": "hat",
+      "color_points": 2,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Santa Monica Pier",
+      "color": "lavender",
+      "record": 1,
+      "in_vogue": "sunglasses",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Laguna Beach Luau",
+      "color": "gold",
+      "record": 1,
+      "in_vogue": "multicolor",
+      "color_points": 3,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Newport Beach Yacht Club",
+      "color": "teal",
+      "record": 2,
+      "in_vogue": "hat",
+      "color_points": 1,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Dana Point Harbor",
+      "color": "coral",
+      "record": 1,
+      "in_vogue": "shoes",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "San Clemente Surf Club",
+      "color": "lavender",
+      "record": 2,
+      "in_vogue": "sunglasses",
+      "color_points": 1,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Oceanside Pier",
+      "color": "gold",
+      "record": 1,
+      "in_vogue": "multicolor",
+      "color_points": 3,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Carlsbad Village",
+      "color": "teal",
+      "record": 1,
+      "in_vogue": "hat",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Encinitas Moonlight",
+      "color": "coral",
+      "record": 2,
+      "in_vogue": "shoes",
+      "color_points": 1,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Solana Beach Sunset",
+      "color": "lavender",
+      "record": 1,
+      "in_vogue": "sunglasses",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Del Mar Racetrack",
+      "color": "gold",
+      "record": 2,
+      "in_vogue": "multicolor",
+      "color_points": 3,
+      "record_points": 2,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "La Jolla Cove",
+      "color": "teal",
+      "record": 1,
+      "in_vogue": "hat",
+      "color_points": 1,
+      "record_points": 1,
+      "in_vogue_points": 4
+    },
+    {
+      "party_name": "Coronado Island",
+      "color": "coral",
+      "record": 2,
+      "in_vogue": "shoes",
+      "color_points": 1,
+      "record_points": 2,
+      "in_vogue_points": 4
+    }
+  ]
+  

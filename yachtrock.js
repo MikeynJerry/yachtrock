@@ -33,6 +33,7 @@ function (dojo, declare, gamegui, counter, stock) {
 
         setup: function(gamedatas) {
             console.log("Yacht Rock game setup");
+            console.log(gamedatas);
             this.initializeGameAreas();
             this.initializePlayerAreas(gamedatas.players);
             this.createBoard();
