@@ -1,0 +1,404 @@
+[
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "lavender"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["coral", "lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "teal"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["teal", "coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "coral"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["teal", "coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "coral"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "lavender"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["lavender", "coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "hat",
+        "colors": ["gold", "teal"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["lavender", "teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "musical",
+        "value": "duet"
+    },
+    {
+        "type": "musical",
+        "value": "duet"
+    },
+    {
+        "type": "musical",
+        "value": "duet"
+    },
+    {
+        "type": "clothing",
+        "value": "sunglasses",
+        "colors": ["lavender", "teal"],
+        "points": 1
+    },
+    {
+        "type": "musical",
+        "value": "anthem"
+    },
+    {
+        "type": "musical",
+        "value": "anthem"
+    },
+    {
+        "type": "musical",
+        "value": "lyrics"
+    },
+    {
+        "type": "musical",
+        "value": "lyrics"
+    },
+    {
+        "type": "musical",
+        "value": "lyrics"
+    },
+    {
+        "type": "musical",
+        "value": "saxophone"
+    },
+    {
+        "type": "musical",
+        "value": "saxophone"
+    },
+    {
+        "type": "musical",
+        "value": "saxophone"
+    },
+    {
+        "type": "musical",
+        "value": "anthem"
+    },
+    {
+        "type": "musical",
+        "value": "refrain"
+    },
+    {
+        "type": "musical",
+        "value": "refrain"
+    },
+    {
+        "type": "musical",
+        "value": "guitar"
+    },
+    {
+        "type": "musical",
+        "value": "guitar"
+    },
+    {
+        "type": "musical",
+        "value": "guitar"
+    },
+    {
+        "type": "musical",
+        "value": "beat"
+    },
+    {
+        "type": "musical",
+        "value": "beat"
+    },
+    {
+        "type": "musical",
+        "value": "beat"
+    },
+    {
+        "type": "musical",
+        "value": "refrain"
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "shoes",
+        "colors": ["lavender"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["coral"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["gold"],
+        "points": 3
+    },
+    {
+        "type": "clothing",
+        "value": "bottom",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["teal"],
+        "points": 1
+    },
+    {
+        "type": "clothing",
+        "value": "top",
+        "colors": ["teal"],
+        "points": 1
+    }
+]

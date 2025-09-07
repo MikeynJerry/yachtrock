@@ -67,9 +67,11 @@ class Game extends \Bga\GameFramework\Table
         ]);
 
         $this->cards = $this->getNew("module.common.deck");
-        $this->cards->init("soiree_deck");
+        $this->cards->init("cards");
 
-        $this->soiree_cards = json_decode(file_get_contents(__DIR__ . "/../../soiree_cards.json"), true);
+        $this->soiree_cards = json_decode(file_get_contents(__DIR__ . "/../../data/soiree_cards.json"), true);
+        $this->single_cards = json_decode(file_get_contents(__DIR__ . "/../../data/single_cards.json"), true);
+        $this->style_cards = json_decode(file_get_contents(__DIR__ . "/../../data/style_cards.json"), true);
     }
 
     /**
@@ -97,8 +99,8 @@ class Game extends \Bga\GameFramework\Table
             )
         );
 
-
         $this->createCards();
+        $this->dealCards();
         $this->activeNextPlayer();
         // try {
         //     // Set the colors of the players
@@ -139,7 +141,7 @@ class Game extends \Bga\GameFramework\Table
 
     private function createCards(): void
     {
-
+        // Create soiree cards
         $cards = [];
         foreach ($this->soiree_cards as $i => $soiree) {
             $cards[] = [
@@ -148,10 +150,46 @@ class Game extends \Bga\GameFramework\Table
                 'nbr'      => 1,
             ];
         }
-
         $this->cards->createCards($cards, 'soiree_deck');
+        $this->cards->shuffle('soiree_deck');
+
+        // Create single cards
+        $cards = [];
+        foreach ($this->single_cards as $i => $single) {
+            $cards[] = [
+                'type'     => 'single',
+                'type_arg' => $i,
+                'nbr'      => 1,
+            ];
+        }
+        $this->cards->createCards($cards, 'single_deck');
+        $this->cards->shuffle('single_deck');
+
+        // Create style cards
+        $cards = [];
+        foreach ($this->style_cards as $i => $style) {
+            $cards[] = [
+                'type'     => 'style',
+                'type_arg' => $i,
+                'nbr'      => 1,
+            ];
+        }
+        $this->cards->createCards($cards, 'style_deck');
+        $this->cards->shuffle('style_deck');
     }
 
+    private function dealCards(): void
+    {
+        for ($i = 1; $i <= 5; $i++) {
+            $this->cards->pickCardForLocation('style_deck', 'style_board', $i);
+        }
+        for ($i = 1; $i <= 2; $i++) {
+            $this->cards->pickCardForLocation('single_deck', 'single_board', $i);
+        }
+        for ($i = 1; $i <= 2; $i++) {
+            $this->cards->pickCardForLocation('soiree_deck', 'soiree_board', $i);
+        }
+    }
 
     /**
      * Game state arguments for player turn
@@ -512,22 +550,6 @@ class Game extends \Bga\GameFramework\Table
     }
 
     /**
-     * Helper method to deal a card to a specific slot
-     */
-    private function dealCardToSlot(int $slotNumber): void
-    {
-        // $card = $this->getObjectFromDb(
-        //     "SELECT * FROM style_cards WHERE card_location = 'deck' LIMIT 1"
-        // );
-
-        // if ($card) {
-        //     $this->DbQuery(
-        //         "UPDATE style_cards SET card_location = 'slot{$slotNumber}' WHERE card_id = {$card['card_id']}"
-        //     );
-        // }
-    }
-
-    /**
      * Next player logic
      */
     public function stNextPlayer(): void
@@ -748,37 +770,6 @@ class Game extends \Bga\GameFramework\Table
     }
 
     /**
-     * Create style cards for the game
-     */
-    private function createStyleCards(int $playerCount): void
-    {
-        // // This would create the actual style cards based on the game components
-        // // For now, creating placeholder cards
-        // $cardId = 1;
-
-        // // Clothing cards
-        // foreach (self::CLOTHING_TYPES as $clothingType) {
-        //     foreach (self::CARD_COLORS as $color) {
-        //         $points = ($color == 'gold') ? 3 : 1;
-        //         $this->DbQuery(
-        //             "INSERT INTO style_cards (card_id, card_type, card_type_arg, card_location, card_location_arg, card_color, card_clothing_type, card_points, card_musical_attribute) 
-        //              VALUES ($cardId, 'clothing', 1, 'deck', 0, '$color', '$clothingType', $points, 'none')"
-        //         );
-        //         $cardId++;
-        //     }
-        // }
-
-        // // Musical style cards
-        // foreach (self::MUSICAL_ATTRIBUTES as $attribute) {
-        //     $this->DbQuery(
-        //         "INSERT INTO style_cards (card_id, card_type, card_type_arg, card_location, card_location_arg, card_color, card_clothing_type, card_points, card_musical_attribute) 
-        //          VALUES ($cardId, 'musical', 2, 'deck', 0, 'none', 'none', 0, '$attribute')"
-        //     );
-        //     $cardId++;
-        // }
-    }
-
-    /**
      * Deal initial style cards
      */
     private function dealInitialStyleCards(): void
@@ -889,10 +880,29 @@ class Game extends \Bga\GameFramework\Table
     {
         $result = [];
         $cards = [];
-        foreach ($this->cards->getCardsInLocation('soiree_deck', null, 'card_type_arg') as $i => $soiree) {
-            $cards[] = $this->soiree_cards[$soiree['type_arg']];
+        foreach ($this->cards->getCardsInLocation('soiree_board', null, 'card_type_arg') as $i => $soiree) {
+            $card = $this->soiree_cards[$soiree['type_arg']];
+            $card['index'] = $soiree['type_arg'];
+            $card['position'] = $soiree['location_arg'];
+            $cards[] = $card;
         }
         $result["soireeCards"] = $cards;
+        $cards = [];
+        foreach ($this->cards->getCardsInLocation('single_board', null, 'card_type_arg') as $i => $single) {
+            $card = $this->single_cards[$single['type_arg']];
+            $card['index'] = $single['type_arg'];
+            $card['position'] = $single['location_arg'];
+            $cards[] = $card;
+        }
+        $result["singleCards"] = $cards;
+        $cards = [];
+        foreach ($this->cards->getCardsInLocation('style_board', null, 'card_type_arg') as $i => $style) {
+            $card = $this->style_cards[$style['type_arg']];
+            $card['index'] = $style['type_arg'];
+            $card['position'] = $style['location_arg'];
+            $cards[] = $card;
+        }
+        $result["styleCards"] = $cards;
         return $result;
         // $current_player_id = (int) $this->getCurrentPlayerId();
 

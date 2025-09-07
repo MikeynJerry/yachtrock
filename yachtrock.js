@@ -37,7 +37,9 @@ function (dojo, declare, gamegui, counter, stock) {
             this.initializeGameAreas();
             this.initializePlayerAreas(gamedatas.players);
             this.createBoard();
-            this.showCards();
+            this.showSingleCards(gamedatas.singleCards);
+            this.showSoireeCards(gamedatas.soireeCards);
+            this.showStyleCards(gamedatas.styleCards);
             //this.updateStyleSlots(gamedatas.styleSlots);
             //this.updateSingleCards(gamedatas.singleCards);
             //this.updateSoireeCards(gamedatas.soireeCards);
@@ -52,19 +54,37 @@ function (dojo, declare, gamegui, counter, stock) {
             `);
         },
 
-        showCards: function () {
-            console.log("Showing cards");
+        showSingleCards: function (singleCards) {
+            console.log("Showing single cards");
             const parent = document.getElementById('board-area');
-            parent.insertAdjacentHTML('beforeend', `
-                <div id="single-card-0" class="single-card-sprite single-card-0 single-card-left">
-                </div>
-            `);
-            parent.insertAdjacentHTML('beforeend', `
-                <div id="single-card-1" class="single-card-sprite single-card-1 single-card-right">
-                </div>
-            `);
+            for (let i = 0; i < singleCards.length; i++) {
+                parent.insertAdjacentHTML('beforeend', `
+                    <div id="single-card-${singleCards[0].position}" class="single-card single-card-${singleCards[i].index} single-card-pos-${singleCards[i].position}">
+                    </div>
+                `);
+            }
         },
- 
+
+        showSoireeCards: function (soireeCards) {
+            const parent = document.getElementById('board-area');
+            for (let i = 0; i < soireeCards.length; i++) {
+                parent.insertAdjacentHTML('beforeend', `
+                    <div id="soiree-card-${soireeCards[i].position}" class="soiree-card-back soiree-card-${soireeCards[i].index} soiree-card-pos-${soireeCards[i].position}">
+                    </div>
+                `);
+            }
+        },
+
+        showStyleCards: function (styleCards) {
+            const parent = document.getElementById('board-area');
+            for (let i = 0; i < styleCards.length; i++) {
+                parent.insertAdjacentHTML('beforeend', `
+                    <div id="style-card-${styleCards[i].position}" class="style-card style-card-${styleCards[i].index} style-card-pos-${styleCards[i].position}">
+                    </div>
+                `);
+            }
+        },
+
         initializeGameAreas: function () {
             const gameArea = document.getElementById('page-content');
             gameArea.insertAdjacentHTML('beforeend', `
