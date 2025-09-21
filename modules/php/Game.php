@@ -100,7 +100,6 @@ class Game extends \Bga\GameFramework\Table
         );
 
         $this->createCards();
-        $this->dealCards();
         $this->activeNextPlayer();
         // try {
         //     // Set the colors of the players
@@ -139,43 +138,41 @@ class Game extends \Bga\GameFramework\Table
         // }
     }
 
+    public function stGameSetup(): void
+    {
+        // // Very basic setup - just initialize game state variables
+        // $this->setGameStateInitialValue("current_round", 1);
+        // $this->setGameStateInitialValue("style_cards_dealt", 0);
+        // $this->setGameStateInitialValue("party_phase", 0);
+        // $this->setGameStateInitialValue("last_chosen_slot", 0);
+
+        // // Set a default first player (will be updated later)
+        // $this->setGameStateInitialValue("first_player_id", 0);
+
+        $this->cards->shuffle('soiree_deck');
+        $this->cards->shuffle('single_deck');
+        $this->cards->shuffle('style_deck');
+
+        $this->dealCards();
+
+        // Transition to next state immediately
+        $this->gamestate->nextState("setupComplete");
+    }
+
     private function createCards(): void
     {
-        // Create soiree cards
-        $cards = [];
-        foreach ($this->soiree_cards as $i => $soiree) {
-            $cards[] = [
-                'type'     => 'soiree',
-                'type_arg' => $i,
-                'nbr'      => 1,
-            ];
+        $decks = ['soiree' => $this->soiree_cards, 'single' => $this->single_cards, 'style' => $this->style_cards];
+        foreach ($decks as $type => $deck) {
+            $cards = [];
+            foreach ($deck as $i => $card) {
+                $cards[] = [
+                    'type'     => $type,
+                    'type_arg' => $i,
+                    'nbr'      => 1,
+                ];
+            }
+            $this->cards->createCards($cards, $type . '_deck');
         }
-        $this->cards->createCards($cards, 'soiree_deck');
-        $this->cards->shuffle('soiree_deck');
-
-        // Create single cards
-        $cards = [];
-        foreach ($this->single_cards as $i => $single) {
-            $cards[] = [
-                'type'     => 'single',
-                'type_arg' => $i,
-                'nbr'      => 1,
-            ];
-        }
-        $this->cards->createCards($cards, 'single_deck');
-        $this->cards->shuffle('single_deck');
-
-        // Create style cards
-        $cards = [];
-        foreach ($this->style_cards as $i => $style) {
-            $cards[] = [
-                'type'     => 'style',
-                'type_arg' => $i,
-                'nbr'      => 1,
-            ];
-        }
-        $this->cards->createCards($cards, 'style_deck');
-        $this->cards->shuffle('style_deck');
     }
 
     private function dealCards(): void
@@ -502,24 +499,6 @@ class Game extends \Bga\GameFramework\Table
         //         "INSERT INTO player_single_tokens (player_id, token_count) VALUES ($player_id, 1)"
         //     );
         // }
-    }
-
-    /**
-     * Game setup
-     */
-    public function stGameSetup(): void
-    {
-        // // Very basic setup - just initialize game state variables
-        // $this->setGameStateInitialValue("current_round", 1);
-        // $this->setGameStateInitialValue("style_cards_dealt", 0);
-        // $this->setGameStateInitialValue("party_phase", 0);
-        // $this->setGameStateInitialValue("last_chosen_slot", 0);
-
-        // // Set a default first player (will be updated later)
-        // $this->setGameStateInitialValue("first_player_id", 0);
-
-        // // Transition to next state immediately
-        // $this->gamestate->nextState("setupComplete");
     }
 
     /**

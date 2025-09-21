@@ -40,11 +40,7 @@ function (dojo, declare, gamegui, counter, stock) {
             this.showSingleCards(gamedatas.singleCards);
             this.showSoireeCards(gamedatas.soireeCards);
             this.showStyleCards(gamedatas.styleCards);
-            //this.updateStyleSlots(gamedatas.styleSlots);
-            //this.updateSingleCards(gamedatas.singleCards);
-            //this.updateSoireeCards(gamedatas.soireeCards);
         },
-
 
         createBoard: function () {
             const parent = document.getElementById('board-area');
@@ -82,6 +78,19 @@ function (dojo, declare, gamegui, counter, stock) {
                     <div id="style-card-${styleCards[i].position}" class="style-card style-card-${styleCards[i].index} style-card-pos-${styleCards[i].position}">
                     </div>
                 `);
+                dojo.connect(dojo.byId('style-card-' + styleCards[i].position), 'onclick', this, 'onStyleCardClick');
+            }
+        },
+
+        onStyleCardClick: function (evt) {
+            const cardId = evt.currentTarget.id.replace('style-card-', '');
+            console.log('onStyleCardClick ' + cardId);
+            dojo.stopEvent(evt);
+            this.selectedSlot = parseInt(cardId);
+            if (this.gamedatas.gamestate.name == 'playerTurn') {
+                  this.bgaPerformAction('actChooseStyleSlot', {card: this.selectedSlot});
+            } else {
+                  this.showMoveUnauthorized();
             }
         },
 

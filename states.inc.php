@@ -57,7 +57,7 @@ use Bga\GameFramework\StateType;
 
 $machinestates = [
     // Initial state
-    1 => GameStateBuilder::gameSetup(2)->build(),
+    // 1 => GameStateBuilder::gameSetup(2)->build(),
 
     // Game setup
     2 => GameStateBuilder::create()
