@@ -21,7 +21,7 @@ define([
     "ebg/stock"
 ],
 function (dojo, declare, gamegui, counter, stock) {
-    return declare("bgagame.babyyachtrock", gamegui, {
+    return declare("bgagame.yachtrock", gamegui, {
         constructor: function () {
             this.styleCardStacks = [[], [], [], [], []]
             this.singleCards = [];
@@ -60,7 +60,7 @@ function (dojo, declare, gamegui, counter, stock) {
             const parent = document.getElementById('board');
             for (let i = 0; i < singleCards.length; i++) {
                 parent.insertAdjacentHTML('beforeend', `
-                    <div id="single-card-${singleCards[0].position}" class="single-card single-card-${singleCards[i].index} single-card-pos-${singleCards[i].position}">
+                    <div id="single-card-${singleCards[i].position}" class="single-card single-card-${singleCards[i].index} single-card-pos-${singleCards[i].position}">
                     </div>
                 `);
             }
@@ -76,56 +76,56 @@ function (dojo, declare, gamegui, counter, stock) {
             }
         },
 
+        showStyleCards: function (styleCards) {
+            console.log("Showing style cards", styleCards);
 
+            const stackOffset = 50; // vertical shift per card
+            for (let styleCard of styleCards) {
+                const parent = document.getElementById(`style-card-stack-${styleCard.slotNumber}`);
 
+                // Create the card div
+                const cardDiv = dojo.create('div', {
+                    id: `style-card-${styleCard.index}`,
+                    className: 'style-card',
+                    style: `top: ${styleCard.stackPosition * stackOffset}px; z-index: ${styleCard.stackPosition + 1}`
+                });
 
+                // Find the correct position in the parent
+                let inserted = false;
+                for (let child of parent.children) {
+                    const childIndex = parseInt(child.dataset.position); // assume each child has data-position
+                    if (styleCard.stackPosition < childIndex) {
+                        parent.insertBefore(cardDiv, child);
+                        inserted = true;
+                        break;
+                    }
+                }
 
-showStyleCards: function (styleCards) {
-    console.log("Showing style cards", styleCards);
+                // If no child has a higher position, append at the end
+                if (!inserted) {
+                    parent.appendChild(cardDiv);
+                }
 
-    // Create all cards inside their parent stack containers
-    for (let styleCard of styleCards) {
-        let position = parseInt(styleCard.position);
-        const parent = document.getElementById(`style-card-stack-${position}`);
+                // Store the position in a data attribute for future reference
+                cardDiv.dataset.position = styleCard.stackPosition;
+            }
 
-        dojo.create('div', {
-            id: `style-card-${styleCard.index}`,
-            className: 'style-card',
-        }, parent);
-    }
-
-    // Add click handler
-    dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
-
-    // Stack the cards and adjust container heights
-    this.stackCards();
-},
-
-
-stackCards: function () {
-    const offset = 50; // vertical shift per card
-
-    // iterate over each stack container
-    dojo.query('.style-card-stack').forEach((stack) => {
-        const cards = stack.querySelectorAll('.style-card');
-        cards.forEach((card, i) => {
-            card.style.top = (i * offset) + 'px';
-            card.style.zIndex = i + 1;
-        });
-
-        // set stack container height to fit all cards
-        if (cards.length > 0) {
-            const stackHeight = (cards.length - 1) * offset + cards[0].offsetHeight;
-            stack.style.height = stackHeight + 'px';
-        } else {
-            stack.style.height = '0px';
-        }
-    });
-},
-
-
-
-
+            // Connect click handler
+            dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
+            
+            // TODO: Can we remove this?
+            dojo.query('.style-card-stack').forEach((stack) => {
+                const cards = stack.querySelectorAll('.style-card');
+                // set stack container height to fit all cards
+                if (cards.length > 0) {
+                    const stackHeight = (cards.length - 1) * stackOffset + cards[0].offsetHeight;
+                    stack.style.height = stackHeight + 'px';
+                } else {
+                    stack.style.height = '0px';
+                }
+            });
+            // End TODO
+        },
 
         onStyleCardClick: function (evt) {
             dojo.stopEvent(evt);
@@ -270,7 +270,7 @@ stackCards: function () {
                     //this.setupPlayerTurn(args);
                     break;
                 case 'optionalActions':
-                    this.setupOptionalActions(args);
+                    //this.setupOptionalActions(args);
                     break;
                 case 'chooseParties':
                     //this.setupChooseParties(args);

@@ -173,12 +173,13 @@
 
 .style-card-stack {
     display: inline-block;
-  position: relative;
-  transform: scale(.33);
-  transform-origin: top left;
-  background-color:chartreuse;
+    position: relative;
+    transform: scale(.33);
+    transform-origin: top left;
+    background-color:chartreuse;
     margin-bottom: 100px;
 }
+
 .style-card {
     background-image: url('img/style_cards.jpg');
     width: 300px;
@@ -193,20 +194,13 @@
 }
 
 #style-card-stack:nth-child(n) {
-      display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* assign --i = child index */
-.card:nth-child(1) { --i: 1; }
-.card:nth-child(2) { --i: 2; }
-.card:nth-child(3) { --i: 3; }
-.card:nth-child(4) { --i: 4; }
-
-
 #style-card-stack-1, #style-card-stack-2, #style-card-stack-3, #style-card-stack-4, #style-card-stack-5 {
-        position: absolute;
+    position: absolute;
     top: 231px;
 }
 
