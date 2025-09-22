@@ -100,8 +100,8 @@ class Game extends \Bga\GameFramework\Table
         );
 
         $this->createCards();
-        $this->gamestate->changeActivePlayer("2364452");
-        //$this->activeNextPlayer("2364452");
+        $this->gamestate->changeActivePlayer("2422642");
+        //$this->activeNextPlayer();
         // try {
         //     // Set the colors of the players
         //     $gameinfos = $this->getGameinfos();

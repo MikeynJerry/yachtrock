@@ -49,7 +49,7 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         createStyleCardStacks: function () {
-            const parent = document.getElementById('board-area');
+            const parent = document.getElementById('board');
             for (let i = 1; i <= 5; i++) {
                 parent.insertAdjacentHTML('beforeend', `<div id="style-card-stack-${i}" class="style-card-stack"></div>`)
             }
@@ -57,7 +57,7 @@ function (dojo, declare, gamegui, counter, stock) {
 
         showSingleCards: function (singleCards) {
             console.log("Showing single cards", singleCards);
-            const parent = document.getElementById('board-area');
+            const parent = document.getElementById('board');
             for (let i = 0; i < singleCards.length; i++) {
                 parent.insertAdjacentHTML('beforeend', `
                     <div id="single-card-${singleCards[0].position}" class="single-card single-card-${singleCards[i].index} single-card-pos-${singleCards[i].position}">
@@ -76,19 +76,56 @@ function (dojo, declare, gamegui, counter, stock) {
             }
         },
 
-        showStyleCards: function (styleCards) {
-            console.log("Showing style cards", styleCards);
-            for (let styleCard of styleCards) {
-                console.log(`style-card-stack-${styleCard.position}`, styleCard)
-                let position = parseInt(styleCard.position)
-                const parent = document.getElementById(`style-card-stack-${position}`);
-                dojo.create('div', {
-                    id: `style-card-${styleCard.index}`,
-                    className: 'style-card',
-                }, parent)
-            }
-            dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
-        },
+
+
+
+
+showStyleCards: function (styleCards) {
+    console.log("Showing style cards", styleCards);
+
+    // Create all cards inside their parent stack containers
+    for (let styleCard of styleCards) {
+        let position = parseInt(styleCard.position);
+        const parent = document.getElementById(`style-card-stack-${position}`);
+
+        dojo.create('div', {
+            id: `style-card-${styleCard.index}`,
+            className: 'style-card',
+        }, parent);
+    }
+
+    // Add click handler
+    dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
+
+    // Stack the cards and adjust container heights
+    this.stackCards();
+},
+
+
+stackCards: function () {
+    const offset = 50; // vertical shift per card
+
+    // iterate over each stack container
+    dojo.query('.style-card-stack').forEach((stack) => {
+        const cards = stack.querySelectorAll('.style-card');
+        cards.forEach((card, i) => {
+            card.style.top = (i * offset) + 'px';
+            card.style.zIndex = i + 1;
+        });
+
+        // set stack container height to fit all cards
+        if (cards.length > 0) {
+            const stackHeight = (cards.length - 1) * offset + cards[0].offsetHeight;
+            stack.style.height = stackHeight + 'px';
+        } else {
+            stack.style.height = '0px';
+        }
+    });
+},
+
+
+
+
 
         onStyleCardClick: function (evt) {
             dojo.stopEvent(evt);
@@ -104,6 +141,10 @@ function (dojo, declare, gamegui, counter, stock) {
                 this.showMoveUnauthorized();
             }
         },
+
+
+
+
 
         initializeGameAreas: function () {
             const gameArea = document.getElementById('page-content');
