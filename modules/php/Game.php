@@ -69,9 +69,9 @@ class Game extends \Bga\GameFramework\Table
         $this->cards = $this->getNew("module.common.deck");
         $this->cards->init("cards");
 
-        $this->soiree_cards = json_decode(file_get_contents(__DIR__ . "/../../data/soiree_cards.json"), true);
-        $this->single_cards = json_decode(file_get_contents(__DIR__ . "/../../data/single_cards.json"), true);
-        $this->style_cards = json_decode(file_get_contents(__DIR__ . "/../../data/style_cards.json"), true);
+        $this->soireeCards = json_decode(file_get_contents(__DIR__ . "/../../data/soiree_cards.json"), true);
+        $this->singleCards = json_decode(file_get_contents(__DIR__ . "/../../data/single_cards.json"), true);
+        $this->styleCards = json_decode(file_get_contents(__DIR__ . "/../../data/style_cards.json"), true);
     }
 
     /**
@@ -100,7 +100,8 @@ class Game extends \Bga\GameFramework\Table
         );
 
         $this->createCards();
-        $this->activeNextPlayer();
+        $this->gamestate->changeActivePlayer("2364452");
+        //$this->activeNextPlayer("2364452");
         // try {
         //     // Set the colors of the players
         //     $gameinfos = $this->getGameinfos();
@@ -161,7 +162,7 @@ class Game extends \Bga\GameFramework\Table
 
     private function createCards(): void
     {
-        $decks = ['soiree' => $this->soiree_cards, 'single' => $this->single_cards, 'style' => $this->style_cards];
+        $decks = ['soiree' => $this->soireeCards, 'single' => $this->singleCards, 'style' => $this->styleCards];
         foreach ($decks as $type => $deck) {
             $cards = [];
             foreach ($deck as $i => $card) {
@@ -217,30 +218,27 @@ class Game extends \Bga\GameFramework\Table
      */
     public function argOptionalActions(): array
     {
-        // $player_id = $this->getActivePlayerId();
+        $styleCards = [];
+        $singleCards = [];
 
-        // // Get player's clothing cards
-        // $clothingCards = $this->getCollectionFromDb(
-        //     "SELECT * FROM style_cards WHERE card_location = 'player_hand' AND card_location_arg = $player_id AND card_type = 'clothing'"
-        // );
+        foreach ($this->cards->getCardsInLocation('player_hand') as $styleCard) {
+            $card = $this->styleCards[$styleCard['type_arg']];
+            $card['index'] = $styleCard['type_arg'];
+            $card['owner'] = $styleCard['location_arg'];
+            $styleCards[] = $card;
+        }
 
-        // // Get available single cards
-        // $singleCards = $this->getCollectionFromDb(
-        //     "SELECT * FROM single_cards WHERE card_location LIKE 'board%'"
-        // );
+        foreach ($this->cards->getCardsInLocation('single_board') as $singleCard) {
+            $card = $this->singleCards[$singleCard['type_arg']];
+            $card['index'] = $singleCard['type_arg'];
+            $card['position'] = $singleCard['location_arg'];
+            $singleCards[] = $card;
+        }
 
-        // // Get player's musical style cards
-        // $musicalCards = $this->getCollectionFromDb(
-        //     "SELECT sc.* FROM style_cards sc 
-        //      INNER JOIN player_musical_cards pmc ON sc.card_id = pmc.card_id 
-        //      WHERE pmc.player_id = $player_id"
-        // );
-
-        // return [
-        //     'clothingCards' => $clothingCards,
-        //     'singleCards' => $singleCards,
-        //     'musicalCards' => $musicalCards
-        // ];
+        return [
+            'styleCards' => $styleCards,
+            'singleCards' => $singleCards,
+        ];
     }
 
     /**
@@ -261,47 +259,38 @@ class Game extends \Bga\GameFramework\Table
      * Player chooses a style slot
      */
     #[Action(name: "actChooseStyleSlot")]
-    public function actChooseStyleSlot(int $slot_number): void
+    public function actChooseStyleSlot(int $slotNumber): void
     {
-        // $player_id = (int)$this->getActivePlayerId();
+        $player_id = (int)$this->getActivePlayerId();
 
-        // // Check if slot is valid
-        // $args = $this->argPlayerTurn();
-        // if (!in_array($slot_number, $args['availableSlots'])) {
-        //     throw new \BgaUserException('Invalid slot choice');
-        // }
+        // Check if slot is valid
+        if ($slotNumber < 1 || $slotNumber > 5) {
+            throw new \BgaUserException('Invalid slot choice');
+        }
 
-        // // Take all cards from the chosen slot
-        // $cards = $this->getCollectionFromDb(
-        //     "SELECT * FROM style_cards WHERE card_location = 'slot{$slot_number}'"
-        // );
+        // Take all cards from the chosen slot
+        $cards = $this->getCollectionFromDb(
+            "SELECT * FROM cards WHERE card_location = 'style_board' and card_location_arg = $slotNumber"
+        );
 
-        // foreach ($cards as $card) {
-        //     if ($card['card_type'] == 'clothing') {
-        //         // Add to player's hand
-        //         $this->DbQuery(
-        //             "UPDATE style_cards SET card_location = 'player_hand', card_location_arg = $player_id WHERE card_id = {$card['card_id']}"
-        //         );
-        //     } else {
-        //         // Add musical style card to player's collection
-        //         $this->DbQuery(
-        //             "INSERT INTO player_musical_cards (player_id, card_id) VALUES ($player_id, {$card['card_id']})"
-        //         );
-        //     }
-        // }
+        foreach ($cards as $card) {
+            $this->DbQuery(
+                "UPDATE cards SET card_location = 'player_hand', card_location_arg = $player_id WHERE card_id = {$card['card_id']}"
+            );
+        }
 
-        // // Store the chosen slot for dealing new cards
-        // $this->setGameStateValue("last_chosen_slot", $slot_number);
+        // Store the chosen slot for dealing new cards
+        $this->setGameStateValue("last_chosen_slot", $slotNumber);
 
-        // // Notify about cards taken
-        // $this->notify->all("cardsTaken", clienttranslate('${player_name} takes cards from style slot ${slot_number}'), [
-        //     "player_id" => $player_id,
-        //     "player_name" => $this->getActivePlayerName(),
-        //     "slot_number" => $slot_number,
-        //     "cards" => $cards
-        // ]);
+        // Notify about cards taken
+        $this->notify->all("cardsTaken", clienttranslate('${player_name} takes cards from style slot ${slot_number}'), [
+            "player_id" => $player_id,
+            "player_name" => $this->getActivePlayerName(),
+            "slot_number" => $slotNumber,
+            "cards" => $cards
+        ]);
 
-        // $this->gamestate->nextState("styleSlotChosen");
+        $this->gamestate->nextState("styleSlotChosen");
     }
 
     /**
@@ -506,26 +495,20 @@ class Game extends \Bga\GameFramework\Table
      */
     public function stDealStyleCards(): void
     {
-        // // Get the last chosen slot from game state
-        // $lastChosenSlot = $this->getGameStateValue("last_chosen_slot");
+        // Get the last chosen slot from game state
+        $lastChosenSlot = $this->getGameStateValue("last_chosen_slot");
 
-        // if ($lastChosenSlot) {
-        //     // Deal one card to the chosen slot
-        //     $this->dealCardToSlot($lastChosenSlot);
+        if ($lastChosenSlot) {
+            // Deal one card to adjacent slots (left and right)
+            $leftSlot = ($lastChosenSlot == 1) ? 5 : $lastChosenSlot - 1;
+            $rightSlot = ($lastChosenSlot == 5) ? 1 : $lastChosenSlot + 1;
 
-        //     // Deal one card to adjacent slots (left and right)
-        //     $leftSlot = ($lastChosenSlot == 1) ? 5 : $lastChosenSlot - 1;
-        //     $rightSlot = ($lastChosenSlot == 5) ? 1 : $lastChosenSlot + 1;
+            $this->cards->pickCardForLocation('style_deck', 'style_board', $leftSlot);
+            $this->cards->pickCardForLocation('style_deck', 'style_board', $lastChosenSlot);
+            $this->cards->pickCardForLocation('style_deck', 'style_board', $rightSlot);
+        }
 
-        //     $this->dealCardToSlot($leftSlot);
-        //     $this->dealCardToSlot($rightSlot);
-
-        //     // Update style cards dealt count
-        //     $currentDealt = $this->getGameStateValue("style_cards_dealt");
-        //     $this->setGameStateValue("style_cards_dealt", $currentDealt + 3);
-        // }
-
-        // $this->gamestate->nextState("cardsDealt");
+        $this->gamestate->nextState("cardsDealt");
     }
 
     /**
@@ -860,7 +843,7 @@ class Game extends \Bga\GameFramework\Table
         $result = [];
         $cards = [];
         foreach ($this->cards->getCardsInLocation('soiree_board', null, 'card_type_arg') as $i => $soiree) {
-            $card = $this->soiree_cards[$soiree['type_arg']];
+            $card = $this->soireeCards[$soiree['type_arg']];
             $card['index'] = $soiree['type_arg'];
             $card['position'] = $soiree['location_arg'];
             $cards[] = $card;
@@ -868,7 +851,7 @@ class Game extends \Bga\GameFramework\Table
         $result["soireeCards"] = $cards;
         $cards = [];
         foreach ($this->cards->getCardsInLocation('single_board', null, 'card_type_arg') as $i => $single) {
-            $card = $this->single_cards[$single['type_arg']];
+            $card = $this->singleCards[$single['type_arg']];
             $card['index'] = $single['type_arg'];
             $card['position'] = $single['location_arg'];
             $cards[] = $card;
@@ -876,7 +859,7 @@ class Game extends \Bga\GameFramework\Table
         $result["singleCards"] = $cards;
         $cards = [];
         foreach ($this->cards->getCardsInLocation('style_board', null, 'card_type_arg') as $i => $style) {
-            $card = $this->style_cards[$style['type_arg']];
+            $card = $this->styleCards[$style['type_arg']];
             $card['index'] = $style['type_arg'];
             $card['position'] = $style['location_arg'];
             $cards[] = $card;

@@ -23,12 +23,9 @@ define([
 function (dojo, declare, gamegui, counter, stock) {
     return declare("bgagame.babyyachtrock", gamegui, {
         constructor: function () {
-            this.styleSlots = {};
-            this.singleCards = {};
-            this.soireeCards = {};
-            this.playerHands = {};
-            this.selectedCards = [];
-            this.selectedSlot = null;
+            this.styleCardStacks = [[], [], [], [], []]
+            this.singleCards = [];
+            this.soireeCards = [];
         },
 
         setup: function(gamedatas) {
@@ -37,6 +34,7 @@ function (dojo, declare, gamegui, counter, stock) {
             this.initializeGameAreas();
             this.initializePlayerAreas(gamedatas.players);
             this.createBoard();
+            this.createStyleCardStacks();
             this.showSingleCards(gamedatas.singleCards);
             this.showSoireeCards(gamedatas.soireeCards);
             this.showStyleCards(gamedatas.styleCards);
@@ -50,9 +48,16 @@ function (dojo, declare, gamegui, counter, stock) {
             `);
         },
 
+        createStyleCardStacks: function () {
+            const parent = document.getElementById('board-area');
+            for (let i = 1; i <= 5; i++) {
+                parent.insertAdjacentHTML('beforeend', `<div id="style-card-stack-${i}" class="style-card-stack"></div>`)
+            }
+        },
+
         showSingleCards: function (singleCards) {
-            console.log("Showing single cards");
-            const parent = document.getElementById('board');
+            console.log("Showing single cards", singleCards);
+            const parent = document.getElementById('board-area');
             for (let i = 0; i < singleCards.length; i++) {
                 parent.insertAdjacentHTML('beforeend', `
                     <div id="single-card-${singleCards[0].position}" class="single-card single-card-${singleCards[i].index} single-card-pos-${singleCards[i].position}">
@@ -72,25 +77,31 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         showStyleCards: function (styleCards) {
-            const parent = document.getElementById('board');
-            for (let i = 0; i < styleCards.length; i++) {
-                parent.insertAdjacentHTML('beforeend', `
-                    <div id="style-card-${styleCards[i].position}" class="style-card style-card-${styleCards[i].index} style-card-pos-${styleCards[i].position}">
-                    </div>
-                `);
-                dojo.connect(dojo.byId('style-card-' + styleCards[i].position), 'onclick', this, 'onStyleCardClick');
+            console.log("Showing style cards", styleCards);
+            for (let styleCard of styleCards) {
+                console.log(`style-card-stack-${styleCard.position}`, styleCard)
+                let position = parseInt(styleCard.position)
+                const parent = document.getElementById(`style-card-stack-${position}`);
+                dojo.create('div', {
+                    id: `style-card-${styleCard.index}`,
+                    className: 'style-card',
+                }, parent)
             }
+            dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
         },
 
         onStyleCardClick: function (evt) {
-            const cardId = evt.currentTarget.id.replace('style-card-', '');
-            console.log('onStyleCardClick ' + cardId);
             dojo.stopEvent(evt);
-            this.selectedSlot = parseInt(cardId);
-            if (this.gamedatas.gamestate.name == 'playerTurn') {
-                  this.bgaPerformAction('actChooseStyleSlot', {card: this.selectedSlot});
+
+            const parentId = evt.currentTarget.parentNode.id; // e.g. "style-card-stack-2"
+            const slotNumber = parseInt(parentId.replace('style-card-stack-', ''));
+
+            console.log('onStyleCardClick slotNumber', slotNumber);
+
+            if (this.gamedatas.gamestate.name === 'playerTurn') {
+                this.bgaPerformAction('actChooseStyleSlot', { slotNumber: slotNumber });
             } else {
-                  this.showMoveUnauthorized();
+                this.showMoveUnauthorized();
             }
         },
 
@@ -98,10 +109,6 @@ function (dojo, declare, gamegui, counter, stock) {
             const gameArea = document.getElementById('page-content');
             gameArea.insertAdjacentHTML('beforeend', `
                 <div id="board-area">
-                </div>
-            `);
-            gameArea.insertAdjacentHTML('beforeend', `
-                <div id="score-track">
                 </div>
             `);
             gameArea.insertAdjacentHTML('beforeend', `
@@ -164,21 +171,6 @@ function (dojo, declare, gamegui, counter, stock) {
             return null;
         },
     
-        // Create clothing card
-        /*createClothingCard: function (card) {
-            const cardElement = document.createElement('div');
-            cardElement.className = `clothing-card ${card.card_color} ${card.card_clothing_type}`;
-            cardElement.setAttribute('data-card-id', card.card_id);
-    
-            cardElement.innerHTML = `
-    <div class="card-title">${card.card_clothing_type.charAt(0).toUpperCase() + card.card_clothing_type.slice(1)}</div>
-    <div class="card-points">${card.card_points}</div>
-    <div class="card-color">${card.card_color}</div>
-            `;
-    
-            return cardElement;
-        },*/
-    
         // Create musical card
         createMusicalCard: function (card) {
             const cardElement = document.createElement('div');
@@ -230,21 +222,20 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         onEnteringState: function (stateName, args) {
-            return;
             console.log('Entering state: ' + stateName);
             
             switch (stateName) {
                 case 'playerTurn':
-                    this.setupPlayerTurn(args);
+                    //this.setupPlayerTurn(args);
                     break;
                 case 'optionalActions':
                     this.setupOptionalActions(args);
                     break;
                 case 'chooseParties':
-                    this.setupChooseParties(args);
+                    //this.setupChooseParties(args);
                     break;
                 case 'partyScoring':
-                    this.setupPartyScoring(args);
+                    //this.setupPartyScoring(args);
                     break;
             }
         },
@@ -269,8 +260,11 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         setupOptionalActions: function (args) {
-            this.clearSelections();
-            
+
+            console.log(args.args);
+            return
+
+
             // Show sell clothing button if player has clothing cards
             if (args.clothingCards && args.clothingCards.length > 0) {
                 dojo.style('sell-clothing-btn', 'display', 'block');
@@ -647,15 +641,15 @@ function (dojo, declare, gamegui, counter, stock) {
         },
         */
 
-        updatePlayerScore: function (args) {
-            // Update player score display
-            if (args.player_id && args.total_points !== undefined) {
-                const scoreElement = dojo.byId('player-score-' + args.player_id);
-                if (scoreElement) {
-                    scoreElement.innerHTML = args.total_points;
-                }
-            }
-        },
+        // updatePlayerScore: function (args) {
+        //     // Update player score display
+        //     if (args.player_id && args.total_points !== undefined) {
+        //         const scoreElement = dojo.byId('player-score-' + args.player_id);
+        //         if (scoreElement) {
+        //             scoreElement.innerHTML = args.total_points;
+        //         }
+        //     }
+        // },
 
         /*
         updateSingleCards: function (args) {
