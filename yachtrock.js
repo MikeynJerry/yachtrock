@@ -23,7 +23,7 @@ define([
 function (dojo, declare, gamegui, counter, stock) {
     return declare("bgagame.yachtrock", gamegui, {
         constructor: function () {
-            this.styleCardStacks = [[], [], [], [], []]
+            this.styleCardSlots = [[], [], [], [], []]
             this.singleCards = [];
             this.soireeCards = [];
         },
@@ -37,7 +37,12 @@ function (dojo, declare, gamegui, counter, stock) {
             this.createStyleCardStacks();
             this.showSingleCards(gamedatas.singleCards);
             this.showSoireeCards(gamedatas.soireeCards);
-            this.showStyleCards(gamedatas.styleCards);
+            this.initializeStyleCards(gamedatas.styleCards);
+            this.setupNotifications();
+        },
+
+        setupNotifications: function () {
+            this.bgaSetupPromiseNotifications();
         },
 
         createBoard: function () {
@@ -76,55 +81,64 @@ function (dojo, declare, gamegui, counter, stock) {
             }
         },
 
-        showStyleCards: function (styleCards) {
-            console.log("Showing style cards", styleCards);
-
-            const stackOffset = 50; // vertical shift per card
+        initializeStyleCards: function (styleCards) {
             for (let styleCard of styleCards) {
-                const parent = document.getElementById(`style-card-stack-${styleCard.slotNumber}`);
+                this.styleCardSlots[styleCard.slotNumber - 1].push(styleCard)
+            }
+            for (let styleCardSlot of this.styleCardSlots) {
+                styleCardSlot.sort((a, b) => a.stackPosition - b.stackPosition)
+            }
+            this.updateStyleCards()
+        },
 
-                // Create the card div
-                const cardDiv = dojo.create('div', {
-                    id: `style-card-${styleCard.index}`,
-                    className: 'style-card',
-                    style: `top: ${styleCard.stackPosition * stackOffset}px; z-index: ${styleCard.stackPosition + 1}`
+        updateStyleCards: function () {
+            const stackOffset = 50; // vertical shift per card
+
+            for (let slotNumber = 0; slotNumber < this.styleCardSlots.length; slotNumber++) {
+                const parent = document.getElementById(`style-card-stack-${slotNumber + 1}`);
+                if (!parent) continue;
+
+                const cardsInSlot = this.styleCardSlots[slotNumber];
+                const seenIds = new Set();
+
+                for (let styleCard of cardsInSlot) {
+                    const styleCardId = `style-card-${styleCard.index}`;
+                    let cardDiv = document.getElementById(styleCardId);
+
+                    if (!cardDiv) {
+                        cardDiv = dojo.create('div', {
+                            id: styleCardId,
+                            className: 'style-card',
+                        }, parent); // create directly inside parent
+                    }
+
+                    // update style and z-index
+                    cardDiv.style.top = `${styleCard.stackPosition * stackOffset}px`;
+                    cardDiv.style.zIndex = styleCard.stackPosition + 1;
+                    cardDiv.dataset.position = styleCard.stackPosition;
+
+                    seenIds.add(styleCardId);
+                }
+
+                // Remove any old cards not in the current slot
+                Array.from(parent.querySelectorAll('.style-card')).forEach(child => {
+                    if (!seenIds.has(child.id)) {
+                        child.remove();
+                    }
                 });
 
-                // Find the correct position in the parent
-                let inserted = false;
-                for (let child of parent.children) {
-                    const childIndex = parseInt(child.dataset.position); // assume each child has data-position
-                    if (styleCard.stackPosition < childIndex) {
-                        parent.insertBefore(cardDiv, child);
-                        inserted = true;
-                        break;
-                    }
+                // Update stack height to fit all cards
+                const cards = parent.querySelectorAll('.style-card');
+                if (cards.length > 0) {
+                    const stackHeight = (cards.length - 1) * stackOffset + cards[0].offsetHeight;
+                    parent.style.height = stackHeight + 'px';
+                } else {
+                    parent.style.height = '0px';
                 }
-
-                // If no child has a higher position, append at the end
-                if (!inserted) {
-                    parent.appendChild(cardDiv);
-                }
-
-                // Store the position in a data attribute for future reference
-                cardDiv.dataset.position = styleCard.stackPosition;
             }
 
             // Connect click handler
             dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
-            
-            // TODO: Can we remove this?
-            dojo.query('.style-card-stack').forEach((stack) => {
-                const cards = stack.querySelectorAll('.style-card');
-                // set stack container height to fit all cards
-                if (cards.length > 0) {
-                    const stackHeight = (cards.length - 1) * stackOffset + cards[0].offsetHeight;
-                    stack.style.height = stackHeight + 'px';
-                } else {
-                    stack.style.height = '0px';
-                }
-            });
-            // End TODO
         },
 
         onStyleCardClick: function (evt) {
@@ -135,16 +149,12 @@ function (dojo, declare, gamegui, counter, stock) {
 
             console.log('onStyleCardClick slotNumber', slotNumber);
 
-            if (this.gamedatas.gamestate.name === 'playerTurn') {
+            if (this.checkAction('actChooseStyleSlot', true)) {
                 this.bgaPerformAction('actChooseStyleSlot', { slotNumber: slotNumber });
             } else {
                 this.showMoveUnauthorized();
             }
         },
-
-
-
-
 
         initializeGameAreas: function () {
             const gameArea = document.getElementById('page-content');
@@ -188,41 +198,16 @@ function (dojo, declare, gamegui, counter, stock) {
             });
         },
     
-        // Update style slots with cards
-        updateStyleSlots: function (styleSlots) {
-            for (let i = 1; i <= 5; i++) {
-                const slot = document.getElementById('style-slot-' + i);
-                const cards = styleSlots[i] || [];
-    
-                slot.innerHTML = '';
-                cards.forEach(card => {
-                    const cardElement = createCardElement(card);
-                    slot.appendChild(cardElement);
-                });
-            }
+        notif_styleCardsTaken: function (args) {
+            this.styleCardSlots[args.slotNumber - 1] = []
+            this.updateStyleCards()
         },
-    
-        // Create card element
-        createCardElement: function (card) {
-            if (card.card_type === 'clothing') {
-                return createClothingCard(card);
-            } else if (card.card_type === 'musical') {
-                return createMusicalCard(card);
+
+        notif_styleCardsDealt: function (args) {
+            for (const styleCard of args.styleCards) {
+                this.styleCardSlots[styleCard.slotNumber - 1].push(styleCard)
             }
-            return null;
-        },
-    
-        // Create musical card
-        createMusicalCard: function (card) {
-            const cardElement = document.createElement('div');
-            cardElement.className = 'musical-card';
-            cardElement.setAttribute('data-card-id', card.card_id);
-    
-            cardElement.innerHTML = `
-    <div class="card-attribute">${card.card_musical_attribute}</div>
-            `;
-    
-            return cardElement;
+            this.updateStyleCards()
         },
     
         // Update single cards
@@ -285,7 +270,7 @@ function (dojo, declare, gamegui, counter, stock) {
             console.log('Leaving state: ' + stateName);
             
             // Clear any active selections
-            this.clearSelections();
+            //this.clearSelections();
         },
 
         setupPlayerTurn: function (args) {
@@ -591,38 +576,7 @@ function (dojo, declare, gamegui, counter, stock) {
             this.closeModal('single-recording-modal');
         },
 
-        closeModal: function (modalId) {
-            const modal = dojo.byId(modalId);
-            if (modal) {
-                dojo.destroy(modal);
-            }
-        },
-
-        clearSelections: function () {
-            // Clear all selections
-            this.selectedCards = [];
-            this.selectedSlot = null;
-            
-            // Remove selectable and selected classes
-            dojo.query('.selectable, .selected').forEach(element => {
-                dojo.removeClass(element, 'selectable selected');
-            });
-            
-            // Hide action buttons
-            dojo.style('sell-clothing-btn', 'display', 'none');
-            dojo.style('record-single-btn', 'display', 'none');
-            dojo.style('pass-optional-btn', 'display', 'none');
-        },
-
-        confirmAction: function (action, data) {
-            if (this.checkAction(action)) {
-                this.ajaxcall('/yachtrock/yachtrock/act' + action.charAt(0).toUpperCase() + action.slice(1), data, this, function (result) {
-                    // Action completed successfully
-                });
-            }
-        },
-
-        showScoringAnimation: function () {
+         showScoringAnimation: function () {
             // Create scoring animation
             const animation = dojo.create('div', {
                 className: 'scoring-animation'
@@ -638,107 +592,5 @@ function (dojo, declare, gamegui, counter, stock) {
                 dojo.destroy(animation);
             }, 3000);
         },
-
-        // Override methods
-        setupNotifications: function () {
-            console.log('yachtrock setupNotifications');
-            
-            // Handle notifications from server
-            this.notif_cardsTaken = function (notif) {
-                this.updateStyleSlots(notif.args);
-            };
-            
-            this.notif_clothingSold = function (notif) {
-                this.updatePlayerScore(notif.args);
-            };
-            
-            this.notif_singleRecorded = function (notif) {
-                this.updateSingleCards(notif.args);
-            };
-            
-            this.notif_partyChosen = function (notif) {
-                this.updatePartyChoices(notif.args);
-            };
-            
-            this.notif_playerScored = function (notif) {
-                this.updatePlayerScore(notif.args);
-            };
-        },
-
-        /*
-        updateStyleSlots: function (args) {
-            // Update the style slots display
-            if (args.slot_number && args.cards) {
-                const slotElement = dojo.byId('style-slot-' + args.slot_number);
-                if (slotElement) {
-                    // Clear and repopulate slot
-                    dojo.empty(slotElement);
-                    args.cards.forEach(card => {
-                        const cardElement = this.createCardElement(card);
-                        dojo.place(cardElement, slotElement);
-                    });
-                }
-            }
-        },
-        */
-
-        // updatePlayerScore: function (args) {
-        //     // Update player score display
-        //     if (args.player_id && args.total_points !== undefined) {
-        //         const scoreElement = dojo.byId('player-score-' + args.player_id);
-        //         if (scoreElement) {
-        //             scoreElement.innerHTML = args.total_points;
-        //         }
-        //     }
-        // },
-
-        /*
-        updateSingleCards: function (args) {
-            // Update single cards display
-            if (args.single_card) {
-                // Remove recorded single from board
-                const cardElement = dojo.query('[data-card-id="' + args.single_card.card_id + '"]')[0];
-                if (cardElement) {
-                    dojo.destroy(cardElement);
-                }
-            }
-        },
-        */
-
-        updatePartyChoices: function (args) {
-            // Update party choice display
-            if (args.player_id && args.party_name) {
-                // Show which party the player chose
-                const choiceElement = dojo.byId('party-choice-' + args.player_id);
-                if (choiceElement) {
-                    choiceElement.innerHTML = args.party_name;
-                }
-            }
-        },
-
-        /*
-        createCardElement: function (card) {
-            if (card.card_type === 'clothing') {
-                return this.createClothingCard(card);
-            } else if (card.card_type === 'musical') {
-                return this.createMusicalCard(card);
-            }
-            return null;
-        },
-        */
-
-        createMusicalCard: function (card) {
-            const cardElement = dojo.create('div', {
-                className: 'musical-card',
-                'data-card-id': card.card_id
-            });
-            
-            const attribute = dojo.create('div', {
-                className: 'card-attribute',
-                innerHTML: card.card_musical_attribute
-            }, cardElement);
-            
-            return cardElement;
-        }
     });
 });

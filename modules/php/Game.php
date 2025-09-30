@@ -26,6 +26,7 @@ class Game extends \Bga\GameFramework\Table
 {
     // Game constants
     const STYLE_CARDS_PER_ROUND = [
+        1 => 38,
         2 => 20,
         3 => 29,
         4 => 38,
@@ -100,8 +101,8 @@ class Game extends \Bga\GameFramework\Table
         );
 
         $this->createCards();
-        $this->gamestate->changeActivePlayer("2422642");
-        //$this->activeNextPlayer();
+        //$this->gamestate->changeActivePlayer("2422642");
+        $this->activeNextPlayer();
         // try {
         //     // Set the colors of the players
         //     $gameinfos = $this->getGameinfos();
@@ -268,17 +269,16 @@ class Game extends \Bga\GameFramework\Table
             throw new \BgaUserException('Invalid slot choice');
         }
 
-        $cards = $this->cards->moveAllCardsInLocation("style_slot_$slotNumber", 'player_hand', null, $playerId);
+        $this->cards->moveAllCardsInLocation("style_slot_$slotNumber", 'player_hand', null, $playerId);
 
         // Store the chosen slot for dealing new cards
         $this->setGameStateValue("last_chosen_slot", $slotNumber);
 
         // Notify about cards taken
-        $this->notify->all("cardsTaken", clienttranslate('${player_name} takes cards from style slot ${slot_number}'), [
-            "player_id" => $playerId,
-            "player_name" => $this->getActivePlayerName(),
-            "slot_number" => $slotNumber,
-            "cards" => $cards
+        $this->notify->all("styleCardsTaken", clienttranslate('${playerName} takes cards from style slot ${slotNumber}'), [
+            "playerId" => $playerId,
+            "playerName" => $this->getActivePlayerName(),
+            "slotNumber" => $slotNumber,
         ]);
 
         $this->gamestate->nextState("styleSlotChosen");
@@ -292,18 +292,26 @@ class Game extends \Bga\GameFramework\Table
         // Get the last chosen slot from game state
         $lastChosenSlot = $this->getGameStateValue("last_chosen_slot");
 
-        if ($lastChosenSlot) {
-            // Deal one card to adjacent slots (left and right)
-            $leftSlot = ($lastChosenSlot == 1) ? 5 : $lastChosenSlot - 1;
-            $rightSlot = ($lastChosenSlot == 5) ? 1 : $lastChosenSlot + 1;
+        // Deal one card to adjacent slots (left and right)
+        $leftSlot = ($lastChosenSlot == 1) ? 5 : $lastChosenSlot - 1;
+        $rightSlot = ($lastChosenSlot == 5) ? 1 : $lastChosenSlot + 1;
 
-            foreach ([$leftSlot, $lastChosenSlot, $rightSlot] as $slotNumber) {
-                // Get all cards currently in this slot
-                $cardsInSlot = $this->cards->getCardsInLocation("style_slot_$slotNumber");
-                // Pick a card and place it at the top of the stack
-                $this->cards->pickCardForLocation('style_deck', "style_slot_$slotNumber", count($cardsInSlot));
-            }
+        $styleCards = [];
+        foreach ([$leftSlot, $lastChosenSlot, $rightSlot] as $slotNumber) {
+            // Get all cards currently in this slot
+            $cardsInSlot = $this->cards->getCardsInLocation("style_slot_$slotNumber");
+            // Pick a card and place it at the top of the stack
+            $dbStyleCard = $this->cards->pickCardForLocation('style_deck', "style_slot_$slotNumber", count($cardsInSlot));
+            $styleCard = $this->styleCards[$dbStyleCard['type_arg']];
+            $styleCard['index'] = $dbStyleCard['type_arg'];
+            $styleCard['slotNumber'] = $slotNumber;
+            $styleCard['stackPosition'] = (int) $dbStyleCard['location_arg'];
+            $styleCards[] = $styleCard;
         }
+
+        $this->notify->all("styleCardsDealt", "", [
+            "styleCards" => $styleCards,
+        ]);
 
         $this->gamestate->nextState("cardsDealt");
     }

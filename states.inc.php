@@ -92,7 +92,7 @@ $machinestates = [
         ->type(StateType::GAME)
         ->action('stDealStyleCards')
         ->transitions([
-            'cardsDealt' => 3,
+            'cardsDealt' => 5,
         ])
         ->build(),
 
