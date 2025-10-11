@@ -868,6 +868,14 @@ class Game extends \Bga\GameFramework\Table
             $cards[] = $card;
         }
         $result["styleCards"] = $cards;
+        $cards = [];
+        foreach ($this->cards->getCardsInLocation('player_hand') as $styleCard) {
+            $card = $this->styleCards[$styleCard['type_arg']];
+            $card['index'] = (int) $styleCard['type_arg'];
+            $card['playerId'] = $styleCard['location_arg'];
+            $cards[] = $card;
+        }
+        $result["playerCards"] = $cards;
         return $result;
         // $current_player_id = (int) $this->getCurrentPlayerId();
 

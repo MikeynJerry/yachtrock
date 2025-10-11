@@ -13,6 +13,17 @@
  *
  */
 
+class PlayerHand {
+    constructor(cards) {
+        this.cards = cards;
+    }
+
+    count(value) {
+        return this.cards.filter(card => card.value === value).length
+    }
+}
+
+
 define([
     "dojo",
     "dojo/_base/declare",
@@ -26,11 +37,19 @@ function (dojo, declare, gamegui, counter, stock) {
             this.styleCardSlots = [[], [], [], [], []]
             this.singleCards = [];
             this.soireeCards = [];
+            this.playerHands = {};
         },
 
         setup: function(gamedatas) {
-            console.log("Yacht Rock game setup");
-            console.log(gamedatas);
+            console.log("Yacht Rock game setup", gamedatas);
+
+            for (let playerId of Object.keys(gamedatas.players)) {
+                this.playerHands[playerId] = new PlayerHand([])
+            }
+            for (let card of gamedatas.playerCards) {
+                this.playerHands[card.playerId].cards.push(card)
+            }
+
             this.initializeGameAreas();
             this.initializePlayerAreas(gamedatas.players);
             this.createBoard();
@@ -92,7 +111,8 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         updateStyleCards: function () {
-            const stackOffset = 50; // vertical shift per card
+            const stackOffset = 100; // vertical shift per card
+            let tallestStack = 0;   // track bottom edge of tallest stack
 
             for (let slotNumber = 0; slotNumber < this.styleCardSlots.length; slotNumber++) {
                 const parent = document.getElementById(`style-card-stack-${slotNumber + 1}`);
@@ -109,10 +129,11 @@ function (dojo, declare, gamegui, counter, stock) {
                         cardDiv = dojo.create('div', {
                             id: styleCardId,
                             className: 'style-card',
-                        }, parent); // create directly inside parent
+                        }, parent);
                     }
 
-                    // update style and z-index
+                    // absolutely position the card inside its stack
+                    cardDiv.style.position = 'absolute';
                     cardDiv.style.top = `${styleCard.stackPosition * stackOffset}px`;
                     cardDiv.style.zIndex = styleCard.stackPosition + 1;
                     cardDiv.dataset.position = styleCard.stackPosition;
@@ -120,24 +141,63 @@ function (dojo, declare, gamegui, counter, stock) {
                     seenIds.add(styleCardId);
                 }
 
-                // Remove any old cards not in the current slot
+                // remove old cards not in the slot anymore
                 Array.from(parent.querySelectorAll('.style-card')).forEach(child => {
                     if (!seenIds.has(child.id)) {
                         child.remove();
                     }
                 });
 
-                // Update stack height to fit all cards
+                // update stack container height
                 const cards = parent.querySelectorAll('.style-card');
-                if (cards.length > 0) {
-                    const stackHeight = (cards.length - 1) * stackOffset + cards[0].offsetHeight;
-                    parent.style.height = stackHeight + 'px';
-                } else {
-                    parent.style.height = '0px';
-                }
+                const stackHeight =
+                    cards.length > 0
+                        ? (cards.length - 1) * stackOffset + cards[0].offsetHeight
+                        : 0;
+                parent.style.height = stackHeight + 'px';
+
+                // track tallest stack bottom relative to #board
+                tallestStack = Math.max(tallestStack, parent.offsetTop + stackHeight);
             }
 
-            // Connect click handler
+            // -------------------------
+            // SPACER: push #player-areas below overflowing stacks
+            // -------------------------
+            const playerAreas = document.getElementById('player-areas');
+            if (playerAreas) {
+                let spacer = document.getElementById('board-spacer-before-player-areas');
+                if (!spacer) {
+                    spacer = document.createElement('div');
+                    spacer.id = 'board-spacer-before-player-areas';
+                    spacer.style.width = '100%';
+                    spacer.style.pointerEvents = 'none';
+                    spacer.style.visibility = 'invisible'; // invisible but takes space
+                    playerAreas.parentNode.insertBefore(spacer, playerAreas);
+                }
+
+                const board = document.getElementById('board');
+                const boardRect = board.getBoundingClientRect();
+                const boardHeight = boardRect.height; // use rect height for consistency
+
+                // compute maximum bottom of any stack relative to the top of the board
+                let maxBottomInsideBoard = 0;
+
+                for (let slotNumber = 0; slotNumber < this.styleCardSlots.length; slotNumber++) {
+                    const parent = document.getElementById(`style-card-stack-${slotNumber + 1}`);
+                    if (!parent) continue;
+
+                    const parentRect = parent.getBoundingClientRect();
+
+                    // bottomInsideBoard is how many pixels from the top of #board the bottom of this stack is
+                    maxBottomInsideBoard = Math.max(maxBottomInsideBoard, parentRect.bottom - boardRect.top)
+                }
+
+                // Spacer = extra needed beyond board’s fixed height
+                const extraNeeded = Math.max(0, Math.ceil(maxBottomInsideBoard - boardHeight));
+                spacer.style.height = (extraNeeded + 10) + 'px'; // +10px padding
+            }
+
+            // reconnect card click handler
             dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
         },
 
@@ -171,33 +231,53 @@ function (dojo, declare, gamegui, counter, stock) {
         // Initialize player areas
         initializePlayerAreas: function (players) {
             const playerAreas = document.getElementById('player-areas');
-    
-            // Convert players object to array if needed, or iterate over object properties
-            const playerList = Array.isArray(players) ? players : Object.values(players);
-            
-            playerList.forEach(player => {
-                const playerArea = document.createElement('div');
-                playerArea.className = 'player-area';
-                playerArea.id = 'player-area-' + player.id;
-
-                playerArea.innerHTML = `
-    <div class="player-name">${player.name}</div>
-    <div class="player-score" id="player-score-${player.id}">${player.score}</div>
-    <div class="player-outfit" id="player-outfit-${player.id}">
-        <!-- Outfit items will be displayed here -->
-    </div>
-    <div class="player-tokens" id="player-tokens-${player.id}">
-        Single Tokens: 0
-    </div>
-    <div class="party-choice" id="party-choice-${player.id}">
-        <!-- Party choice will be displayed here -->
-    </div>
-                `;
-    
-                playerAreas.appendChild(playerArea);
-            });
+            for (let playerId of Object.keys(players)) {
+                const playerName = players[playerId].name
+                playerAreas.insertAdjacentHTML('beforeend',
+                    `<div class="player-area-main" id="player-area-${playerId}">
+                        <p class="player-area-name">${playerName}'s cards</p>
+                            <div class="player-area-flex">
+                                <div class="player-area-cards">
+                                    <div class="player-area-clothing-cards">
+                                    </div>
+                                    <div class="player-area-musical-cards">
+                                    </div>
+                                </div>
+                                <div class="player-area-tokens">
+                                </div>
+                            </div>
+                    </div>`
+                )
+                const playerInfoBox = document.getElementById(`player_board_${playerId}`);
+                playerInfoBox.insertAdjacentHTML(
+                    'beforeend',
+                    `<div class="custom-player-area">
+                        test content for ${playerName}
+                        <table class="player-infobox-musical-count">
+                            <tr>
+                                <th class="infobox_musical_purple_icon">a</th>
+                                <th class="infobox_musical_pink_icon">b</th>
+                                <th class="infobox_musical_orange_icon">c</th>
+                                <th class="infobox_musical_red_icon">d</th>
+                                <th class="infobox_musical_green_icon">e</th>
+                                <th class="infobox_musical_navy_icon">f</th>
+                                <th class="infobox_musical_blue_icon">g</th>
+                            </tr>
+                            <tr>
+                                <td>${this.playerHands[playerId].count('duet')}</td>
+                                <td>${this.playerHands[playerId].count('anthem')}</td>
+                                <td>${this.playerHands[playerId].count('beat')}</td>
+                                <td>${this.playerHands[playerId].count('refrain')}</td>
+                                <td>${this.playerHands[playerId].count('guitar')}</td>
+                                <td>${this.playerHands[playerId].count('saxophone')}</td>
+                                <td>${this.playerHands[playerId].count('lyrics')}</td>
+                            </tr>
+                        </table>
+                    </div>`
+                );
+            }
         },
-    
+
         notif_styleCardsTaken: function (args) {
             this.styleCardSlots[args.slotNumber - 1] = []
             this.updateStyleCards()
