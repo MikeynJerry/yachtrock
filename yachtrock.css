@@ -13,6 +13,10 @@
  *
  */
 
+
+/* ---------------------
+GAME BOARD AREA
+--------------------- */
 #board-area {
     display: flex;
     flex-direction: column;
@@ -23,17 +27,16 @@
     position: relative;
     background-image: url('img/gameboard.png');
     background-size: contain;
-    background-repeat: no-repeat;
    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);*/
     box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.8);
     width: 700px; 
     min-height: 290px;
-    border-radius: 50px;
+    border-radius: 30px;
+    margin-top: 10px;
     /*transform: scale(.5);
     transform-origin: top center;*/
 
 }
-
 
 .single-card {
     background-image: url('img/single_cards.jpg');
@@ -175,22 +178,17 @@
 .style-card-stack {
     display: inline-block;
     position: relative;
-    transform: scale(.33);
-    transform-origin: top left;
     background-color:chartreuse;
     margin-bottom: 100px;
 }
 
 .style-card {
     background-image: url('img/style_cards.jpg');
-    width: 300px;
-    height: 393px; 
-    background-repeat: no-repeat;
-    border-radius: 60px;
-   /* transform: scale(.33);
-    transform-origin: top left;*/
-    background-color: purple;
-    box-shadow: 8px 8px 10px 2px rgba(0,0,0,0.4);
+    background-size: 900px 1179px;
+    width: 100px;
+    height: 131px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.4);
     position: absolute;
 }
 
@@ -205,103 +203,90 @@
     top: 232px;
 }
 
-#style-card-stack-1 {
-    left: 34px;
-}
+#style-card-stack-1 { left: 34px; }
 
-#style-card-stack-2 {
-    left: 167px;
-}
+#style-card-stack-2 { left: 167px; }
 
-#style-card-stack-3 {
-    left: 301px;
-}
+#style-card-stack-3 { left: 301px; }
 
-#style-card-stack-4 {
-    left: 434px;
-}
+#style-card-stack-4 { left: 434px; }
 
-#style-card-stack-5 {
-    left: 568px;
-}
+#style-card-stack-5 { left: 568px; }
 
-#style-card-0 { background-position: -300px 0; }
-#style-card-1 { background-position: -600px 0; }
-#style-card-2 { background-position: -900px 0; }
-#style-card-3 { background-position: -1200px 0; }
-#style-card-4 { background-position: -1500px 0; }
-#style-card-5 { background-position: -1800px 0; }
-#style-card-6 { background-position: -2100px 0; }
-#style-card-7 { background-position: -2400px 0; }
-#style-card-8 { background-position: 0 -393px; }
-#style-card-9 { background-position: -300px -393px; }
-#style-card-10 { background-position: -600px -393px; }
-#style-card-11 { background-position: -900px -393px; }
-#style-card-12 { background-position: -1200px -393px; }
-#style-card-13 { background-position: -1500px -393px; }
-#style-card-14 { background-position: -1800px -393px; }
-#style-card-15 { background-position: -2100px -393px; }
-#style-card-16 { background-position: -2400px -393px; }
-#style-card-17 { background-position: 0 -786px; }
-#style-card-18 { background-position: -300px -786px; }
-#style-card-19 { background-position: -600px -786px; }
-#style-card-20 { background-position: -900px -786px; }
-#style-card-21 { background-position: -1200px -786px; }
-#style-card-22 { background-position: -1500px -786px; }
-#style-card-23 { background-position: -1800px -786px; }
-#style-card-24 { background-position: -2100px -786px; }
-#style-card-25 { background-position: -2400px -786px; }
-#style-card-26 { background-position: 0 -1179px; }
-#style-card-27 { background-position: -300px -1179px; }
-#style-card-28 { background-position: -600px -1179px; }
-#style-card-29 { background-position: -900px -1179px; }
-#style-card-30 { background-position: -1200px -1179px; }
-#style-card-31 { background-position: -1500px -1179px; }
-#style-card-32 { background-position: -1800px -1179px; }
-#style-card-33 { background-position: -2100px -1179px; }
-#style-card-34 { background-position: -2400px -1179px; }
-#style-card-35 { background-position: 0 -1572px; }
-#style-card-36 { background-position: -300px -1572px; }
-#style-card-37 { background-position: -600px -1572px; }
-#style-card-38 { background-position: -900px -1572px; }
-#style-card-39 { background-position: -1200px -1572px; }
-#style-card-40 { background-position: -1500px -1572px; }
-#style-card-41 { background-position: -1800px -1572px; }
-#style-card-42 { background-position: -2100px -1572px; }
-#style-card-43 { background-position: -2400px -1572px; }
-#style-card-44 { background-position: 0 -1965px; }
-#style-card-45 { background-position: -300px -1965px; }
-#style-card-46 { background-position: -600px -1965px; }
-#style-card-47 { background-position: -900px -1965px; }
-#style-card-48 { background-position: -1200px -1965px; }
-#style-card-49 { background-position: -1500px -1965px; }
-#style-card-50 { background-position: -1800px -1965px; }
-#style-card-51 { background-position: -2100px -1965px; }
-#style-card-52 { background-position: -2400px -1965px; }
-#style-card-53 { background-position: 0 -2358px; }
-#style-card-54 { background-position: -300px -2358px; }
-#style-card-55 { background-position: -600px -2358px; }
-#style-card-56 { background-position: -900px -2358px; }
-#style-card-57 { background-position: -1200px -2358px; }
-#style-card-58 { background-position: -1500px -2358px; }
-#style-card-59 { background-position: -1800px -2358px; }
-#style-card-60 { background-position: -2100px -2358px; }
-#style-card-61 { background-position: -2400px -2358px; }
-#style-card-62 { background-position: 0 -2751px; }
-#style-card-63 { background-position: -300px -2751px; }
-#style-card-64 { background-position: -600px -2751px; }
-#style-card-65 { background-position: -900px -2751px; }
-#style-card-66 { background-position: -1200px -2751px; }
-#style-card-67 { background-position: -1500px -2751px; }
-#style-card-68 { background-position: -1800px -2751px; }
-#style-card-69 { background-position: -2100px -2751px; }
-#style-card-70 { background-position: -2400px -2751px; }
-#style-card-71 { background-position: 0 -3144px; }
-#style-card-72 { background-position: -300px -3144px; }
-#style-card-73 { background-position: -600px -3144px; }
-
-
-
+#style-card-0 { background-position: -100px 0; }
+#style-card-1 { background-position: -200px 0; }
+#style-card-2 { background-position: -300px 0; }
+#style-card-3 { background-position: -400px 0; }
+#style-card-4 { background-position: -500px 0; }
+#style-card-5 { background-position: -600px 0; }
+#style-card-6 { background-position: -700px 0; }
+#style-card-7 { background-position: -800px 0; }
+#style-card-8 { background-position: 0 -131px; }
+#style-card-9 { background-position: -100px -131px; }
+#style-card-10 { background-position: -200px -131px; }
+#style-card-11 { background-position: -300px -131px; }
+#style-card-12 { background-position: -400px -131px; }
+#style-card-13 { background-position: -500px -131px; }
+#style-card-14 { background-position: -600px -131px; }
+#style-card-15 { background-position: -700px -131px; }
+#style-card-16 { background-position: -800px -131px; }
+#style-card-17 { background-position: 0 -262px; }
+#style-card-18 { background-position: -100px -262px; }
+#style-card-19 { background-position: -200px -262px; }
+#style-card-20 { background-position: -300px -262px; }
+#style-card-21 { background-position: -400px -262px; }
+#style-card-22 { background-position: -500px -262px; }
+#style-card-23 { background-position: -600px -262px; }
+#style-card-24 { background-position: -700px -262px; }
+#style-card-25 { background-position: -800px -262px; }
+#style-card-26 { background-position: 0 -393px; }
+#style-card-27 { background-position: -100px -393px; }
+#style-card-28 { background-position: -200px -393px; }
+#style-card-29 { background-position: -300px -393px; }
+#style-card-30 { background-position: -400px -393px; }
+#style-card-31 { background-position: -500px -393px; }
+#style-card-32 { background-position: -600px -393px; }
+#style-card-33 { background-position: -700px -393px; }
+#style-card-34 { background-position: -800px -393px; }
+#style-card-35 { background-position: 0 -524px; }
+#style-card-36 { background-position: -100px -524px; }
+#style-card-37 { background-position: -200px -524px; }
+#style-card-38 { background-position: -300px -524px; }
+#style-card-39 { background-position: -400px -524px; }
+#style-card-40 { background-position: -500px -524px; }
+#style-card-41 { background-position: -600px -524px; }
+#style-card-42 { background-position: -700px -524px; }
+#style-card-43 { background-position: -800px -524px; }
+#style-card-44 { background-position: 0 -655px; }
+#style-card-45 { background-position: -100px -655px; }
+#style-card-46 { background-position: -200px -655px; }
+#style-card-47 { background-position: -300px -655px; }
+#style-card-48 { background-position: -400px -655px; }
+#style-card-49 { background-position: -500px -655px; }
+#style-card-50 { background-position: -600px -655px; }
+#style-card-51 { background-position: -700px -655px; }
+#style-card-52 { background-position: -800px -655px; }
+#style-card-53 { background-position: 0 -786px; }
+#style-card-54 { background-position: -100px -786px; }
+#style-card-55 { background-position: -200px -786px; }
+#style-card-56 { background-position: -300px -786px; }
+#style-card-57 { background-position: -400px -786px; }
+#style-card-58 { background-position: -500px -786px; }
+#style-card-59 { background-position: -600px -786px; }
+#style-card-60 { background-position: -700px -786px; }
+#style-card-61 { background-position: -800px -786px; }
+#style-card-62 { background-position: 0 -917px; }
+#style-card-63 { background-position: -100px -917px; }
+#style-card-64 { background-position: -200px -917px; }
+#style-card-65 { background-position: -300px -917px; }
+#style-card-66 { background-position: -400px -917px; }
+#style-card-67 { background-position: -500px -917px; }
+#style-card-68 { background-position: -600px -917px; }
+#style-card-69 { background-position: -700px -917px; }
+#style-card-70 { background-position: -800px -917px; }
+#style-card-71 { background-position: 0 -1048px; }
+#style-card-72 { background-position: -100px -1048px; }
+#style-card-73 { background-position: -200px -1048px; }
 
 /* stack containers can be absolutely positioned on the board; cards are absolute inside the stack */
 .style-card { position: absolute; left: 0; }
@@ -314,31 +299,39 @@
 
 
 
-#player-areas {
-    width: auto;
-    height: auto;
-/*    border: 5px solid red;*/
-    margin: 0 auto;
-    text-align: center;
-    font-size: 1em;
-    font-weight: bold;
-}
+/* ---------------------
+PLAYER BOARD AND SINGLES SECTIONS BACKGROUND BOX
+--------------------- */
 
-.player-area-main {
+.player-area-main, .singles-recorded-area {
     width: 95%;
     /*height: 375px;*/
+    min-height: 150px;
     margin: 10px 5px;
     padding: 20px 10px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.25);
     box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.2);
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
 }
-
-.player-area-name {
+.player-area-main p, .singles-recorded-area p {
     margin: 0 0 16px;
 }
 
-.player-area-flex {
+
+/* ---------------------
+PLAYER BOARDS
+--------------------- */
+
+#player-areas {
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+}
+
+.player-area-flex { /* container for card and token areas */
     width: 100%;
     height: 300px;
     display: flex;
@@ -348,40 +341,134 @@
 
 .player-area-cards {
     width: 570px;
-    height: 300px;
+    min-height: 300px;
+    border: 1px solid #000;
 }
 
 .player-area-clothing-cards {
-    height: 140px;
+    min-height: 131px;
+    min-width: 100px;
+    width: 570px;
     margin: 0 0 10px;
     background-image: url(img/player_clothing_slots.png);
     background-size: 540px 133px;
     background-repeat: no-repeat;
-    background-position: center;
-    border: 1px solid #000;
+    background-position: top left;
+    border: 1px solid #000; 
+    position: relative;
 }
+
+.clothing-slot {
+    position: absolute;
+    top: 0;
+    width: 100px;
+    min-height: 131px;
+    height: auto;
+    border: 1px dashed rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+
+/* Layout the 5 clothing slots horizontally */
+.clothing-slot-hat { left: 0px; }
+.clothing-slot-sunglasses { left: 110px; }
+.clothing-slot-top { left: 220px; }
+.clothing-slot-bottom { left: 330px; }
+.clothing-slot-shoes { left: 440px; }
+
+
 .player-area-musical-cards {
-    height: 140px;
+    min-height: 140px;
+    min-width: 100px;
+    width: 570px;
     background-color: #fff;
+    position: relative;
 }
 
 .player-area-tokens {
     width: 150px;
     height: 300px;
+    text-align: left;
     background-color: pink;
 }
 
+.player-token-container, .first-player-container {
+    display: inline-block;
+    overflow: hidden; /* hide overflow from the inner scaled-down element */
+    vertical-align: top; /* optional: to line them up cleanly */
+    margin: 5px 0 10px 8px;
+}
+.player-token-container {
+  width: 36px; 
+  height: 44px; 
+}
+.first-player-container {
+  width: 92px; 
+  height: 44px; 
+}
+
+.player_token_main, .first-player-token {
+    background-image: url(img/player_tokens.png);
+    transform: scale(0.5);
+    transform-origin: top left;
+}
+.player_token_main {
+    width: 72px;
+    height: 85px;
+}
+.first-player-token {
+    width: 182px;
+    height: 85px;
+    background-position: -432px 0;
+}
 
 
-/* player boards on right hand side */
-table.player-infobox-musical-count, th.player-infobox-musical-count, td.player-infobox-musical-count {
-    border: 1px solid;
-    border-collapse: collapse;
-    background-color: aqua;
-    border-spacing: 15px;
-    padding: 15px!important;
-    width: 200px;
-    margin: 5px;
+/* ---------------------
+RIGHT HAND SIDE PLAYER PANELS / "INFOBOX"
+--------------------- */
+
+.custom-player-area {
+    font-size: 0.9em;
+    padding: 5px;
+}
+
+table.player-infobox-musical-count, table.player-infobox-clothing-singles-count {
+    border-collapse: separate;
+    border-spacing: 8px;
+    text-align: center;
+}
+
+table.player-infobox-musical-count th, table.player-infobox-clothing-singles-count td {
+    width: 22px;
+}
+table.player-infobox-musical-count tr, table.player-infobox-clothing-singles-count tr {
+    height: 22px;
+}
+
+.infobox_icons, .player_token_icon {
+    background-image: url(img/sidebar_icons.png)
+}
+.infobox_musical_icon_purple { background-position: 0 0; } /* duet */
+.infobox_musical_icon_pink { background-position: -22px 0; } /* anthem */
+.infobox_musical_icon_orange { background-position: -44px 0; } /* beat */
+.infobox_musical_icon_red { background-position: -66px 0; } /* refrain */
+.infobox_musical_icon_green { background-position: -88px 0; } /* guitar */
+.infobox_musical_icon_navy { background-position: -110px 0; } /* saxophone */
+.infobox_musical_icon_blue { background-position: -132px 0; } /* lyrics */
+
+.infobox_clothing_icon_hat { background-position: 0 -22px; }
+.infobox_clothing_icon_sunglasses { background-position: -22px -22px; }
+.infobox_clothing_icon_top { background-position: -44px -22px; }
+.infobox_clothing_icon_bottom { background-position: -66px -22px; }
+.infobox_clothing_icon_shoes { background-position: -88px -22px; }
+
+.infobox_icon_singles { background-position: -110px -22px; }
+
+.player_token_icon {
+    width: 13px;
+    height: 15px;
+    display: inline-block;
+    margin-left: 10px;
+    background-repeat: no-repeat;
 }
 
 

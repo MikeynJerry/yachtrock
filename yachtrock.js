@@ -13,6 +13,22 @@
  *
  */
 
+function getScaleFactor(element) {
+    const style = window.getComputedStyle(element);
+    const transform = style.transform || style.webkitTransform;
+    if (transform && transform !== "none") {
+        const match = transform.match(/matrix\((.+)\)/);
+        if (match) {
+            const values = match[1].split(','); // matrix(a, b, c, d, e, f)
+            const scaleX = parseFloat(values[0]);
+            const scaleY = parseFloat(values[3]);
+            return { scaleX, scaleY };
+        }
+    }
+    return { scaleX: 1, scaleY: 1 };
+}
+
+
 class PlayerHand {
     constructor(cards) {
         this.cards = cards;
@@ -23,35 +39,78 @@ class PlayerHand {
     }
 }
 
+function itemIdToCoordsVerticalFit(i, control_width, control_height, items_nbr) {
+    const styleCardRect = document.getElementsByClassName("style-card")[0].getBoundingClientRect();
+    const clothingCardDiv = document.getElementById(`player-area-clothing-cards-${this.playerId}`);
+
+    // Use a fraction of the current rendered card height for overlap
+    const overlapFraction = 0.67; // 30% overlap
+    const verticalSpacing = styleCardRect.height * (1 - overlapFraction);
+
+    const res = {
+        w: styleCardRect.width,
+        h: styleCardRect.height,
+        x: 0,
+        y: Math.round(i * verticalSpacing)
+    };
+
+    const totalHeight = (items_nbr - 1) * verticalSpacing + styleCardRect.height;
+
+    // Set minHeight to at least totalHeight
+    clothingCardDiv.style.minHeight = Math.max(
+        clothingCardDiv.getBoundingClientRect().height,
+        totalHeight
+    ) + "px";
+
+    return res;
+}
+
+
+
+
 
 define([
     "dojo",
     "dojo/_base/declare",
     "ebg/core/gamegui",
     "ebg/counter",
-    "ebg/stock"
+    "ebg/stock",
+    "ebg/zone"
 ],
-function (dojo, declare, gamegui, counter, stock) {
+function (dojo, declare, gamegui, counter, stock, zone) {
     return declare("bgagame.yachtrock", gamegui, {
         constructor: function () {
             this.styleCardSlots = [[], [], [], [], []]
             this.singleCards = [];
             this.soireeCards = [];
             this.playerHands = {};
+            this.globalZones = {};
+            this.playerZones = {};
+            zone.prototype.itemIdToCoordsVerticalFit = itemIdToCoordsVerticalFit
         },
 
         setup: function(gamedatas) {
             console.log("Yacht Rock game setup", gamedatas);
 
-            for (let playerId of Object.keys(gamedatas.players)) {
+            const globalZoneNames = ["style_slot_1", "style_slot_2", "style_slot_3", "style_slot_4", "style_slot_5"]
+            for (let globalZoneName of globalZoneNames) this.globalZones[globalZoneName] = new zone()
+
+            for (let playerId of Object.keys(gamedatas.players)){ 
                 this.playerHands[playerId] = new PlayerHand([])
+                const playerZoneNames = ["musical", "tokens", "singles", "clothing_hat", "clothing_sunglasses", "clothing_top", "clothing_bottom", "clothing_shoes"];
+                this.playerZones[playerId] = {}
+                for (let playerZoneName of playerZoneNames) {
+                    let playerZone = new zone()
+                    playerZone.playerId = playerId
+                    this.playerZones[playerId][playerZoneName] = playerZone
+                }
             }
+
             for (let card of gamedatas.playerCards) {
                 this.playerHands[card.playerId].cards.push(card)
             }
-
             this.initializeGameAreas();
-            this.initializePlayerAreas(gamedatas.players);
+            this.initializePlayerAreas(gamedatas.players, gamedatas.playerorder);
             this.createBoard();
             this.createStyleCardStacks();
             this.showSingleCards(gamedatas.singleCards);
@@ -111,7 +170,7 @@ function (dojo, declare, gamegui, counter, stock) {
         },
 
         updateStyleCards: function () {
-            const stackOffset = 100; // vertical shift per card
+            const stackOffset = 32; // vertical shift per card
             let tallestStack = 0;   // track bottom edge of tallest stack
 
             for (let slotNumber = 0; slotNumber < this.styleCardSlots.length; slotNumber++) {
@@ -201,6 +260,23 @@ function (dojo, declare, gamegui, counter, stock) {
             dojo.query('.style-card').connect('onclick', this, 'onStyleCardClick');
         },
 
+
+        verticalOverlapPattern(offset) {
+            return {
+                pattern: (index, element, total) => {
+                    return {
+                        x: 0,
+                        y: index * offset,  // 30px spacing per card
+                        zIndex: index + 1,
+                    };
+                },
+                // tell the zone how to size itself
+                updateDisplay: (container, patternData, itemCount) => {
+                    container.style.height = (itemCount * offset + 50) + 'px';
+                }
+            };
+        },
+
         onStyleCardClick: function (evt) {
             dojo.stopEvent(evt);
 
@@ -219,6 +295,10 @@ function (dojo, declare, gamegui, counter, stock) {
         initializeGameAreas: function () {
             const gameArea = document.getElementById('page-content');
             gameArea.insertAdjacentHTML('beforeend', `
+                <div id="active-area">
+                </div>
+            `);
+            gameArea.insertAdjacentHTML('beforeend', `
                 <div id="board-area">
                 </div>
             `);
@@ -226,42 +306,126 @@ function (dojo, declare, gamegui, counter, stock) {
                 <div id="player-areas">
                 </div>
             `);
+
+            gameArea.insertAdjacentHTML('beforeend', `
+                    <div class="singles-recorded-area">
+                        <p>Recorded Singles</p> 
+                    </div>
+            `);
         },
 
         // Initialize player areas
-        initializePlayerAreas: function (players) {
+        initializePlayerAreas: function (players, playerOrder) {
             const playerAreas = document.getElementById('player-areas');
-            for (let playerId of Object.keys(players)) {
+            
+            // Apply token sprite background positions
+            const tokenSpriteIcon = { // icon for sidebar
+                "6B0095": "0px -132px", // purple
+                "006078": "-13px -132px", // blue
+                "506400": "-26px -132px", // green
+                "8A0007": "-39px -132px", // red
+                "7D5500": "-52px -132px", // yellow
+                "BB0051": "-65px -132px" // pink
+            };
+
+            const tokenSpriteMain = { // larger token for player board
+                "6B0095": "0px 0px", // purple
+                "006078": "-72px 0px", // blue
+                "506400": "-144px 0px", // green
+                "8A0007": "-216px 0px", // red
+                "7D5500": "-288px 0px", // yellow
+                "BB0051": "-360px 0px" // pink
+            };
+
+            const firstPlayerId = playerOrder[0];
+
+            for (let playerId of playerOrder) { // this is what chatgpt calls the "player setup loop"
                 const playerName = players[playerId].name
+
+                // Insert player area HTML
                 playerAreas.insertAdjacentHTML('beforeend',
                     `<div class="player-area-main" id="player-area-${playerId}">
                         <p class="player-area-name">${playerName}'s cards</p>
-                            <div class="player-area-flex">
-                                <div class="player-area-cards">
-                                    <div class="player-area-clothing-cards">
-                                    </div>
-                                    <div class="player-area-musical-cards">
-                                    </div>
+                        <div class="player-area-flex">
+                            <div class="player-area-cards">
+                                <div id="player-area-clothing-cards-${playerId}" class="player-area-clothing-cards">
+                                    <div id="clothing-slot-hat-${playerId}" class="clothing-slot clothing-slot-hat"></div>
+                                    <div id="clothing-slot-sunglasses-${playerId}" class="clothing-slot clothing-slot-sunglasses"></div>
+                                    <div id="clothing-slot-top-${playerId}" class="clothing-slot clothing-slot-top"></div>
+                                    <div id="clothing-slot-bottom-${playerId}" class="clothing-slot clothing-slot-bottom"></div>
+                                    <div id="clothing-slot-shoes-${playerId}" class="clothing-slot clothing-slot-shoes"></div>
                                 </div>
-                                <div class="player-area-tokens">
+                                <div id="player-area-musical-cards-${playerId}" class="player-area-musical-cards">
                                 </div>
                             </div>
+                            <div id="player-area-tokens-${playerId}" class="player-area-tokens">
+                                <div class="player-tokens-scaled-container"></div>
+                            </div>
+                        </div>
                     </div>`
-                )
+                );
+
+                // Create zones for the style card areas in player hands
+                const clothingTypes = ["hat", "sunglasses", "top", "bottom", "shoes"]
+                for (let clothingType of clothingTypes) {
+                    this.playerZones[playerId][`clothing_${clothingType}`].create(this, `clothing-slot-${clothingType}-${playerId}`, 80.43, 105.36);
+                    this.playerZones[playerId][`clothing_${clothingType}`].setPattern('verticalfit');
+                }
+
+                this.playerZones[playerId]["musical"].create(this, `player-area-musical-cards-${playerId}`, 100, 75);
+                this.playerZones[playerId]["musical"].setPattern('horizontalfit', 'max-width', '150px', { align: 'left' });
+
+
+                // Insert token icon next to icon_point (the points star icon) in sidebar
+                const playerTokenIcon = document.getElementById(`icon_point_${playerId}`);
+                if (playerTokenIcon) {
+                    playerTokenIcon.insertAdjacentHTML(
+                        'beforeend',
+                        `<div class="player_token_icon" id="player_token_icon_${playerId}"></div>`
+                    );
+                }
+
+                // Insert main player token in player board
+                const playerTokenContainer = document.querySelector(`#player-area-${playerId} .player-tokens-scaled-container`);
+                if (playerTokenContainer) {
+                    playerTokenContainer.insertAdjacentHTML(
+                        'beforeend',
+                        `<div class="player-token-container"><div class="player_token_main" id="player_token_main_${playerId}"></div></div>`
+                    );
+
+                    // Add first-player token if this is the first player
+                    if (playerId == firstPlayerId) {
+                        playerTokenContainer.insertAdjacentHTML(
+                            'beforeend',
+                            `<div class="first-player-container"><div class="first-player-token"></div></div>`
+                        );
+                    }
+                }
+
+                // use the color assigned once per player
+                const assignedColor = players[playerId].color;
+
+                const smallTokenEl = document.getElementById(`player_token_icon_${playerId}`);
+                        if (smallTokenEl) smallTokenEl.style.backgroundPosition = tokenSpriteIcon[assignedColor];
+
+                const largeTokenEl = document.getElementById(`player_token_main_${playerId}`);
+                        if (largeTokenEl) largeTokenEl.style.backgroundPosition = tokenSpriteMain[assignedColor];
+
+
+                // Insert player info box HTML.  (FYI use ${playerName} in HTML for player name variable)
                 const playerInfoBox = document.getElementById(`player_board_${playerId}`);
                 playerInfoBox.insertAdjacentHTML(
                     'beforeend',
                     `<div class="custom-player-area">
-                        test content for ${playerName}
                         <table class="player-infobox-musical-count">
                             <tr>
-                                <th class="infobox_musical_purple_icon">a</th>
-                                <th class="infobox_musical_pink_icon">b</th>
-                                <th class="infobox_musical_orange_icon">c</th>
-                                <th class="infobox_musical_red_icon">d</th>
-                                <th class="infobox_musical_green_icon">e</th>
-                                <th class="infobox_musical_navy_icon">f</th>
-                                <th class="infobox_musical_blue_icon">g</th>
+                                <th class="infobox_musical_purple_icon infobox_icons"></th>
+                                <th class="infobox_musical_icon_pink infobox_icons"></th>
+                                <th class="infobox_musical_icon_orange infobox_icons"></th>
+                                <th class="infobox_musical_icon_red infobox_icons"></th>
+                                <th class="infobox_musical_icon_green infobox_icons"></th>
+                                <th class="infobox_musical_icon_navy infobox_icons"></th>
+                                <th class="infobox_musical_icon_blue infobox_icons"></th>
                             </tr>
                             <tr>
                                 <td>${this.playerHands[playerId].count('duet')}</td>
@@ -273,14 +437,38 @@ function (dojo, declare, gamegui, counter, stock) {
                                 <td>${this.playerHands[playerId].count('lyrics')}</td>
                             </tr>
                         </table>
+
+                        <table class="player-infobox-clothing-singles-count">
+                            <tr>
+                                <td class="infobox_clothing_icon_hat infobox_icons"></td>
+                                <td class="infobox_clothing_icon_sunglasses infobox_icons"></td>
+                                <td class="infobox_clothing_icon_top infobox_icons"></td>
+                                <td class="infobox_clothing_icon_bottom infobox_icons"></td>
+                                <td class="infobox_clothing_icon_shoes infobox_icons"></td>
+                                <td align="right">${this.playerHands[playerId].count('singles')}</td>
+                                <td class="infobox_icon_singles infobox_icons"></td>
+                            </tr>
+                            
+                        </table>                
                     </div>`
                 );
-            }
+            };
         },
 
         notif_styleCardsTaken: function (args) {
-            this.styleCardSlots[args.slotNumber - 1] = []
-            this.updateStyleCards()
+            // Loop over all cards in the taken slot
+            for (let styleCard of this.styleCardSlots[args.slotNumber - 1]) {
+                let playerZoneName = styleCard.type == "musical" ?  "musical" : `clothing_${styleCard.value}` //finds the name of the zone it needs to go in, based on the type and value of the card and stores it as the variable playerZoneName
+                let theZoneItself = this.playerZones[args.playerId][playerZoneName] //finds that specific zone object for the specific player in the playerZones dictionary, and stores it as the variable theZoneItself (which is a div)
+                let cardId = `style-card-${styleCard.index}`
+                theZoneItself.placeInZone(cardId); //tells the card to be placed in the appropriate zone
+                cardDiv = document.getElementById(cardId)
+                cardDiv.style.zIndex = null
+            }
+
+            // Clear the slot and refresh stacks
+            this.styleCardSlots[args.slotNumber - 1] = [];
+            this.updateStyleCards();
         },
 
         notif_styleCardsDealt: function (args) {
@@ -316,7 +504,7 @@ function (dojo, declare, gamegui, counter, stock) {
                 }
             })
         },
-    
+
         // Update player scores
         updatePlayerScores: function (players) {
             players.forEach(player => {

@@ -74,8 +74,8 @@ $gameinfos = [
     // NB: the default will be the first language in this list spoken by the player, so you should list them by popularity/preference.
     'language_dependency' => false,
 
-    // Colors attributed to players
-    'player_colors' => ['f5180c', 'a42af5', '14faf2', 'fcf265', 'c5fa69', 'fa41d2'],
+    // Colors attributed to players: purple, blue, green, red, yellow, pink
+    'player_colors' => ['6B0095', '006078', '506400', '8A0007', '7D5500', 'BB0051'],
 
     // Favorite colors support : if set to "true", support attribution of favorite colors based on player's preferences (see reattributeColorsBasedOnPreferences PHP method)
     // NB: this parameter is used only to flag games supporting this feature; you must use (or not use) reattributeColorsBasedOnPreferences PHP method to actually enable or disable the feature.
