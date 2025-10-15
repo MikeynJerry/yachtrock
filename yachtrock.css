@@ -17,10 +17,43 @@
 /* ---------------------
 GAME BOARD AREA
 --------------------- */
-#board-area {
+
+#table-area {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+#card-deck {
+    width: 100px;
+    min-height: 131px;
+    display: inline-block;
+    position: relative;
+    margin: 20px auto;
+}
+/* Move off-screen for small windows */
+@media (max-width: 1105px) {
+    #card-deck {
+        position: absolute;
+        left: -60px; 
+        z-index: 1000;
+    }
+}
+.card-deck-set { 
+    width: 100px;
+    height: 131px;
+    background-image: url('img/style_cards.jpg');
+    background-position: 0 0; 
+    background-size: 900px 1179px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.4);
+}
+
+#board-area {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 #board {
@@ -32,10 +65,7 @@ GAME BOARD AREA
     width: 700px; 
     min-height: 290px;
     border-radius: 30px;
-    margin-top: 10px;
-    /*transform: scale(.5);
-    transform-origin: top center;*/
-
+    margin: 10px auto 0;
 }
 
 .single-card {
@@ -190,6 +220,7 @@ GAME BOARD AREA
     border-radius: 20px;
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.4);
     position: absolute;
+    border: .5px solid #bfbfbf;
 }
 
 #style-card-stack:nth-child(n) {
@@ -303,7 +334,7 @@ GAME BOARD AREA
 PLAYER BOARD AND SINGLES SECTIONS BACKGROUND BOX
 --------------------- */
 
-.player-area-main, .singles-recorded-area {
+.player-area, #singles-recorded-area {
     width: 95%;
     /*height: 375px;*/
     min-height: 150px;
@@ -316,8 +347,12 @@ PLAYER BOARD AND SINGLES SECTIONS BACKGROUND BOX
     font-size: 1em;
     font-weight: bold;
 }
-.player-area-main p, .singles-recorded-area p {
+.player-area p, #singles-recorded-area p {
     margin: 0 0 16px;
+}
+
+#singles-recorded {
+    min-height: 100px;
 }
 
 
@@ -333,7 +368,7 @@ PLAYER BOARDS
 
 .player-area-flex { /* container for card and token areas */
     width: 100%;
-    height: 300px;
+    min-height: 300px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -364,7 +399,6 @@ PLAYER BOARDS
     width: 100px;
     min-height: 131px;
     height: auto;
-    border: 1px dashed rgba(0,0,0,0.2);
     border-radius: 10px;
 }
 
@@ -380,15 +414,15 @@ PLAYER BOARDS
     min-height: 140px;
     min-width: 100px;
     width: 570px;
-    background-color: #fff;
     position: relative;
+    border: 1px solid #fff;
 }
 
 .player-area-tokens {
     width: 150px;
     height: 300px;
     text-align: left;
-    background-color: pink;
+    border: 1px solid blue;
 }
 
 .player-token-container, .first-player-container {
@@ -401,12 +435,13 @@ PLAYER BOARDS
   width: 36px; 
   height: 44px; 
 }
+
 .first-player-container {
   width: 92px; 
   height: 44px; 
 }
 
-.player_token_main, .first-player-token {
+.player_token_main, #first-player-token {
     background-image: url(img/player_tokens.png);
     transform: scale(0.5);
     transform-origin: top left;
@@ -415,10 +450,16 @@ PLAYER BOARDS
     width: 72px;
     height: 85px;
 }
-.first-player-token {
+#first-player-token {
     width: 182px;
     height: 85px;
     background-position: -432px 0;
+}
+
+.player-singles-tokens {
+    background-color: aqua;
+    width: 150px;
+    min-height: 200px;
 }
 
 
